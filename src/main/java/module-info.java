@@ -11,4 +11,6 @@ module org.example.btl {
     exports Entity;
     exports GameManager;
     opens GameManager to javafx.fxml;
+    exports RenderView;
+    opens RenderView to javafx.fxml;
 }

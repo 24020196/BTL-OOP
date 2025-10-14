@@ -1,14 +1,14 @@
 package GameManager;
 
+import RenderView.Menu;
+import javafx.application.Application;
+
 import static javafx.application.Application.launch;
 
 public class HelloController {
 
-    public void initialize() {
-        // HBox rộng bằng VBox cha
-        hbox1.prefWidthProperty().bind(vboxRoot.widthProperty());
-    }
+
     public static void main(String[] args) {
-        launch(args)
+        Application.launch(Menu.class, args);
     }
 }
