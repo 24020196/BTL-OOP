@@ -1,4 +1,4 @@
-package org.example.btl;
+package Entity;
 
 public class PowerUp {
 }

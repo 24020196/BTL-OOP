@@ -1,6 +1,4 @@
-package org.example.btl;
-
-import javafx.stage.Stage;
+package GameManager;
 
 import static javafx.application.Application.launch;
 

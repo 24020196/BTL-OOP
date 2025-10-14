@@ -7,6 +7,8 @@ module org.example.btl {
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
 
-    opens org.example.btl to javafx.fxml;
-    exports org.example.btl;
+    opens Entity to javafx.fxml;
+    exports Entity;
+    exports GameManager;
+    opens GameManager to javafx.fxml;
 }
