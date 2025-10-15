@@ -14,7 +14,7 @@ public class HelloController {
     Button btn;
 
     public void initialize() {
-        GameObject gameObject= new Brick(10,10,100,200,1,1);
+        GameObject gameObject= new Brick(10,10,100,200,1);
         btn.setPrefSize(gameObject.getWidth(),gameObject.getHeight());
         setupEvents();
     }

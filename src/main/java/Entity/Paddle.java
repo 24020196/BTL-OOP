@@ -5,11 +5,11 @@ public class Paddle extends MovableObject {
     private String currentPowerUp;
 
     public void moveLeft() {
-        super.move(-speed,0, 0, 0);
+        super.move(-speed,0);
     }
 
     public void moveRight() {
-        super.move(speed,0, 0, 0);
+        super.move(speed,0);
     }
 
 
