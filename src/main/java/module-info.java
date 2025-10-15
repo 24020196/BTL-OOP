@@ -1,4 +1,4 @@
-module org.example.btl {
+module org {
     requires javafx.controls;
     requires javafx.fxml;
 

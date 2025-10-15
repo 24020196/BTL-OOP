@@ -5,16 +5,12 @@ public class GameObject {
     private double y;
     private double width;
     private double height;
-    private double ratioX;
-    private double ratioY;
-
-    public GameObject(double x, double y, double width, double height, double ratioX, double ratioY) {
+    public GameObject(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.ratioX = ratioX;
-        this.ratioY = ratioY;
+
     }
 
     public void update(double x, double y, double width, double height, double ratioX, double ratioY) {
@@ -22,28 +18,14 @@ public class GameObject {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.ratioX = ratioX;
-        this.ratioY = ratioY;
+
     }
 
     public GameObject() {
     }
 
-    public double getRatioX() {
-        return ratioX;
-    }
 
-    public void setRatioX(double ratioX) {
-        this.ratioX = ratioX;
-    }
 
-    public double getRatioY() {
-        return ratioY;
-    }
-
-    public void setRatioY(double ratioY) {
-        this.ratioY = ratioY;
-    }
 
     public double getX() {
         return x;
