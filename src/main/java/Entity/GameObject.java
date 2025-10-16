@@ -5,28 +5,30 @@ public class GameObject {
     private double y;
     private double width;
     private double height;
+    private double dx;
+    private double dy;
+
     public GameObject(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-
     }
 
-    public void update(double x, double y, double width, double height, double ratioX, double ratioY) {
+    public void update(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+    }
 
+    public void move(double dx, double dy) {
+        this.x += dx;
+        this.y += dy;
     }
 
     public GameObject() {
     }
-
-
-
-
     public double getX() {
         return x;
     }
