@@ -1,31 +1,28 @@
 package Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Ball extends MovableObject {
+public class Ball extends GameObject {
     private double speed;
-    private double directionX;
-    private double directionY;
-    private int lives = 3;
+    private double angle;
+    private double vectorX;
+    private double vectorY;
+    private int lives;
 
     public Ball(double x, double y, double width, double height) {
-        super();
-        setX(x);
-        setY(y);
-        setWidth(width);
-        setHeight(height);
-        this.speed = 5;
-        this.directionX = 1;
-        this.directionY = -1;
+        super(x, y, width, height);
+        this.speed = 10;
+        this.angle = Math.toRadians(80);
+        this.vectorX = Math.cos(angle);
+        this.vectorY = -Math.sin(angle);
+        this.lives = 3;
     }
 
-
-    // 🧩 Hàm update chính: di chuyển và xử lý va chạm
     public void update(double sceneWidth, double sceneHeight, Paddle paddle, List<Brick> bricks) {
-        move(speed * directionX, speed * directionY);
+        move(speed * vectorX, speed * vectorY);
         bounceOff(paddle, bricks, sceneWidth, sceneHeight);
 
-        // 🔥 Kiểm tra nếu rơi khỏi màn hình
         if (getY() > sceneHeight) {
             lives--;
             if (lives <= 0) {
@@ -36,110 +33,78 @@ public class Ball extends MovableObject {
         }
     }
 
-    // 🔄 Reset bóng lại giữa paddle
     public void reset(Paddle paddle) {
-        double newX = paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0;
-        double newY = paddle.getY() - getHeight() - 5; // cách 1 khoảng nhỏ
-        setX(newX);
-        setY(newY);
-        directionX = 1;
-        directionY = -1;
+        setX(paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0);
+        setY(paddle.getY() - getHeight() - 5);
+        this.angle = Math.toRadians(80);
+        this.vectorX = Math.cos(this.angle);
+        this.vectorY = -Math.sin(this.angle);
     }
 
-    // ⚡ Xử lý va chạm (3 tường, paddle, bricks)
-    public void bounceOff(Paddle paddle, List<Brick> bricks,
-                          double sceneWidth, double sceneHeight) {
-
-//        va chạm bên trái phải
-        if (getX() <= 0) {
-            setX(0);
-            directionX *= -1;
-        } else if (getX() + getWidth() >= sceneWidth) {
-            setX(sceneWidth - getWidth());
-            directionX *= -1;
+    public void bounceOff(Paddle paddle, List<Brick> bricks, double sceneWidth, double sceneHeight) {
+        // chạm khung trái phải
+        if (getX() <= 0 || getX() + getWidth() >= sceneWidth) {
+            vectorX *= -0.98;
         }
-
-        // chạm trên
         if (getY() <= 0) {
-            setY(0);
-            directionY *= -1;
+            vectorY*=-0.98;
         }
 
-        // Va chạm paddle
         if (checkCollision(paddle)) {
-            double ballCenter = getX() + getWidth() / 2.0;
-            double paddleCenter = paddle.getX() + paddle.getWidth() / 2.0;
-            double distance = ballCenter - paddleCenter;
-            double percent = distance / (paddle.getWidth() / 2.0);
-
-            // Phản xạ gương có hướng
-            directionX = percent;
-            directionY = -Math.abs(1 - Math.abs(percent));
-
-            // Chuẩn hóa vector
-            double length = Math.sqrt(directionX * directionX + directionY * directionY);
-            directionX /= length;
-            directionY /= length;
-
-            // Đặt bóng ra khỏi paddle để tránh bị kẹt
-            setY(paddle.getY() - getHeight() - 1);
+            vectorY*=-0.98;
         }
 
-        // 🧩 Va chạm gạch
         for (Brick brick : bricks) {
             if (!brick.isDestroyed() && checkCollision(brick)) {
-                brick.hit(); // Trừ máu gạch
+                brick.hit();
+                double overlapLeft = getX() + getWidth() - brick.getX();
+                double overlapRight = brick.getX() + brick.getWidth() - getX();
+                double overlapTop = getY() + getHeight() - brick.getY();
+                double overlapBottom = brick.getY() + brick.getHeight() - getY();
 
-                // Xác định hướng phản xạ
-                double ballCenterX = getX() + getWidth() / 2.0;
-                double ballCenterY = getY() + getHeight() / 2.0;
-                double brickCenterX = brick.getX() + brick.getWidth() / 2.0;
-                double brickCenterY = brick.getY() + brick.getHeight() / 2.0;
+                double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
+                        Math.min(overlapTop, overlapBottom));
 
-                double dx = Math.abs(ballCenterX - brickCenterX);
-                double dy = Math.abs(ballCenterY - brickCenterY);
-
-                if (dx > dy) {
-                    directionX *= -1;
+                if (minOverlap == overlapLeft || minOverlap == overlapRight) {
+                    vectorX *= -0.98;
                 } else {
-                    directionY *= -1;
+                    vectorY *= -0.98;
                 }
+                break;
 
-                break; // tránh xử lý 2 gạch cùng lúc
             }
         }
     }
 
-    // kiểm tra va chạm
-    public boolean checkCollision(GameObject other) {
-        return getX() < other.getX() + other.getWidth() &&
-                getX() + getWidth() > other.getX() &&
-                getY() < other.getY() + other.getHeight() &&
-                getY() + getHeight() > other.getY();
-    }
+    public static void main(String[] args) {
+        double sceneWidth = 400;
+        double sceneHeight = 300;
 
-    // Getters & setters
-    public double getSpeed() {
-        return speed;
-    }
+        Paddle paddle = new Paddle(350, 550, 100, 20);
+        List<Brick> bricks = new ArrayList<>();
+        bricks.add(new Brick(200, 100, 60, 20, 2));
+        bricks.add(new Brick(300, 100, 60, 20, 1));
 
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
+        Ball ball = new Ball(50, 50, 20, 20);
 
-    public double getDirectionX() {
-        return directionX;
-    }
+        for (int i = 0; i < 40000; i+=10) {
+            if (ball.lives >=0) {
+                ball.update(sceneWidth, sceneHeight, paddle, bricks);
+                System.out.printf("Frame %d: Ball(%.1f, %.1f) Dir(%.2f, %.2f) Lives: %d%n",
+                        i, ball.getX(), ball.getY(), ball.vectorX, ball.vectorY, ball.lives);
 
-    public void setDirectionX(double directionX) {
-        this.directionX = directionX;
-    }
 
-    public double getDirectionY() {
-        return directionY;
-    }
+                for (int j = 0; j < bricks.size(); j++) {
+                    Brick b = bricks.get(j);
+                    System.out.printf("   Brick %d: %s (HP=%d)\n", j, b.isDestroyed() ? "DESTROYED" : "ALIVE", b.getHp());
+                }
 
-    public void setDirectionY(double directionY) {
-        this.directionY = directionY;
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
