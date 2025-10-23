@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<AnchorPane fx:id="menuLayout" xmlns:fx="http://javafx.com/fxml"
+<AnchorPane fx:id="mainLayout" xmlns:fx="http://javafx.com/fxml"
             fx:controller="GameManager.MenuController">
     <ImageView fx:id="menuBackground">
         <image>
@@ -16,34 +16,39 @@
         </image>
     </ImageView>
 
-    <AnchorPane fx:id="menuLayout_Button">
-        <ImageView fx:id="btnPlayGame">
+    <AnchorPane fx:id="menuLayout">
+        <ImageView fx:id="btnPlayGame" visible="false">
             <image>
                 <Image url="@../res/menuPlayGame.png"/>
             </image>
         </ImageView>
 
-        <ImageView fx:id="btnHighScores">
+        <ImageView fx:id="btnHighScores" visible="false">
             <image>
                 <Image url="@../res/menuBtnHighScores.png"/>
             </image>
         </ImageView>
 
-        <ImageView fx:id="btnSetting">
+        <ImageView fx:id="btnSetting" visible="false">
             <image>
                 <Image url="@../res/menuBtnSetting.png"/>
             </image>
         </ImageView>
 
-        <ImageView fx:id="btnExit">
+        <ImageView fx:id="btnExit" visible="false">
             <image>
                 <Image url="@../res/menuBtnExit.png"/>
             </image>
         </ImageView>
     </AnchorPane>
 
+    <AnchorPane fx:id="highScores">
 
+    </AnchorPane>
 
+    <AnchorPane fx:id="setting">
+
+    </AnchorPane>
 
 
 </AnchorPane>

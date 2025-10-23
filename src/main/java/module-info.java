@@ -6,6 +6,7 @@ module org {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
+    requires transitive javafx.graphics;
 
     opens Entity to javafx.fxml;
     exports Entity;

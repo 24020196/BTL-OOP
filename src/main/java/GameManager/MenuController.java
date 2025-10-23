@@ -2,17 +2,26 @@ package GameManager;
 
 import Entity.Brick;
 import Entity.GameObject;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import static javafx.application.Application.launch;
 
 
 public class MenuController {
+    @FXML
+    AnchorPane mainLayout;
     @FXML
     AnchorPane menuLayout;
     @FXML
@@ -27,28 +36,23 @@ public class MenuController {
     ImageView btnExit;
 
     public void initialize() {
-        resizeImageView(menuBackground, 0 , 0 , 1280 , 720);
-        resizeImageView(btnPlayGame, 356, 207, 495, 106);
-        resizeImageView(btnHighScores, 356, 336, 495, 106);
-        resizeImageView(btnSetting, 356, 462, 495, 106);
-        resizeImageView(btnExit, 356, 590, 495, 106);
-        menuLayoutEvents();
+
+        Bounds bound = new BoundingBox(0, 0, mainLayout.getWidth(), mainLayout.getHeight());
+        resize(bound);
+
+        mainLayoutEvents();
     }
 
-    private void menuLayoutEvents() {
-        menuLayout.setOnMouseClicked(mouseEvent -> {
+    private void mainLayoutEvents() {
+        mainLayout.setOnMouseClicked(mouseEvent -> {
             System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
         });
 
-        menuLayout.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            resizeImageView(menuBackground, 0 , 0 , 1280 , 720 , newBounds);
-            resizeImageView(btnPlayGame, 356, 207, 495, 106, newBounds);
-            resizeImageView(btnHighScores, 356, 336, 495, 106, newBounds);
-            resizeImageView(btnSetting, 356, 462, 495, 106, newBounds);
-            resizeImageView(btnExit, 356, 590, 495, 106, newBounds);
+        mainLayout.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+            resize(newBounds);
         });
 
-        menuLayout.setOnMouseMoved( mouseMove -> {
+        mainLayout.setOnMouseMoved( mouseMove -> {
             setVisibleImageView(btnPlayGame, mouseMove.getX(), mouseMove.getY());
             setVisibleImageView(btnHighScores, mouseMove.getX(), mouseMove.getY());
             setVisibleImageView(btnSetting, mouseMove.getX(), mouseMove.getY());
@@ -57,22 +61,48 @@ public class MenuController {
         });
 
         btnPlayGame.setOnMouseClicked(event -> {
-            System.out.println("Brick clicked!");
+            //levelLayout.setVisible(true);
+            //menuLayout.setVisible(false);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) mainLayout.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        btnExit.setOnMouseClicked(mouseEvent -> {
+            Platform.exit();
         });
     }
 
-    void resizeImageView(ImageView imageView, double x, double y, double width, double height) {
-        imageView.setLayoutX(x);
-        imageView.setLayoutY(y);
-        imageView.setFitWidth(width);
-        imageView.setFitHeight(height);
+    void resize(Bounds newBounds) {
+        resize(menuLayout,0,0,1280, 720, newBounds);
+
+        resize(menuBackground, 0 , 0 , 1280 , 720, newBounds);
+        resize(btnPlayGame, 356, 207, 495, 106, newBounds);
+        resize(btnHighScores, 356, 336, 495, 106, newBounds);
+        resize(btnSetting, 356, 462, 495, 106, newBounds);
+        resize(btnExit, 356, 590, 495, 106, newBounds);
+
     }
 
-    void resizeImageView(ImageView imageView, double x, double y, double width, double height, Bounds bounds) {
+    void resize(ImageView imageView, double x, double y, double width, double height, Bounds bounds) {
         imageView.setLayoutX(x * bounds.getWidth() / 1280);
         imageView.setLayoutY(y *  bounds.getHeight() / 720);
         imageView.setFitWidth(width * bounds.getWidth() / 1280);
         imageView.setFitHeight(height*  bounds.getHeight() / 720);
+    }
+
+    void resize(AnchorPane anchorPane, double x, double y, double width, double height, Bounds bounds) {
+        anchorPane.setLayoutX(x * bounds.getWidth() / 1280);
+        anchorPane.setLayoutY(y *  bounds.getHeight() / 720);
+        anchorPane.prefWidth(width * bounds.getWidth() / 1280);
+        anchorPane.prefHeight(height*  bounds.getHeight() / 720);
     }
 
     void setVisibleImageView(ImageView imageView, double x, double y) {
@@ -85,7 +115,4 @@ public class MenuController {
             if(y >= up & y <= down) imageView.setVisible(true);
     }
 
-    public void startGame() {
-
-    }
 }
