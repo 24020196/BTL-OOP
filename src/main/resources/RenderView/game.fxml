@@ -9,7 +9,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <AnchorPane fx:id="gameLayout" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="GameManager.GameController">
+            fx:controller="GameManager.GameController"
+            prefWidth="1280"  prefHeight="720">
 
     <ImageView fx:id="gameBackground">
         <image>

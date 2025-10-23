@@ -36,9 +36,7 @@ public class MenuController {
     ImageView btnExit;
 
     public void initialize() {
-
-        Bounds bound = new BoundingBox(0, 0, mainLayout.getWidth(), mainLayout.getHeight());
-        resize(bound);
+        setsize();
 
         mainLayoutEvents();
     }
@@ -48,9 +46,6 @@ public class MenuController {
             System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
         });
 
-        mainLayout.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            resize(newBounds);
-        });
 
         mainLayout.setOnMouseMoved( mouseMove -> {
             setVisibleImageView(btnPlayGame, mouseMove.getX(), mouseMove.getY());
@@ -80,30 +75,22 @@ public class MenuController {
         });
     }
 
-    void resize(Bounds newBounds) {
-        resize(menuLayout,0,0,1280, 720, newBounds);
-
-        resize(menuBackground, 0 , 0 , 1280 , 720, newBounds);
-        resize(btnPlayGame, 356, 207, 495, 106, newBounds);
-        resize(btnHighScores, 356, 336, 495, 106, newBounds);
-        resize(btnSetting, 356, 462, 495, 106, newBounds);
-        resize(btnExit, 356, 590, 495, 106, newBounds);
+    void setsize() {
+        update(menuBackground, 0 , 0 , 1280 , 720);
+        update(btnPlayGame, 356, 207, 495, 106);
+        update(btnHighScores, 356, 336, 495, 106);
+        update(btnSetting, 356, 462, 495, 106);
+        update(btnExit, 356, 590, 495, 106);
 
     }
 
-    void resize(ImageView imageView, double x, double y, double width, double height, Bounds bounds) {
-        imageView.setLayoutX(x * bounds.getWidth() / 1280);
-        imageView.setLayoutY(y *  bounds.getHeight() / 720);
-        imageView.setFitWidth(width * bounds.getWidth() / 1280);
-        imageView.setFitHeight(height*  bounds.getHeight() / 720);
+    void update(ImageView imageView, double x, double y, double width, double height) {
+        imageView.setLayoutX(x);
+        imageView.setLayoutY(y);
+        imageView.setFitWidth(width);
+        imageView.setFitHeight(height);
     }
 
-    void resize(AnchorPane anchorPane, double x, double y, double width, double height, Bounds bounds) {
-        anchorPane.setLayoutX(x * bounds.getWidth() / 1280);
-        anchorPane.setLayoutY(y *  bounds.getHeight() / 720);
-        anchorPane.prefWidth(width * bounds.getWidth() / 1280);
-        anchorPane.prefHeight(height*  bounds.getHeight() / 720);
-    }
 
     void setVisibleImageView(ImageView imageView, double x, double y) {
         double left = imageView.getLayoutX();
