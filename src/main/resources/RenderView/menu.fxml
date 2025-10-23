@@ -8,19 +8,48 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<AnchorPane fx:id="menuLayout" xmlns:fx="http://javafx.com/fxml"
+<AnchorPane fx:id="mainLayout" xmlns:fx="http://javafx.com/fxml"
             fx:controller="GameManager.MenuController">
-    <ImageView fx:id="menuBackground" fitWidth="1280" fitHeight="720" preserveRatio="false">
+    <ImageView fx:id="menuBackground">
         <image>
             <Image url="@../res/menuBackground.png"/>
         </image>
     </ImageView>
 
-    <ImageView fx:id="btnPlayGame">
-        <image>
-            <Image url="@../res/menuPlayGame.png"/>
-        </image>
-    </ImageView>
+    <AnchorPane fx:id="menuLayout">
+        <ImageView fx:id="btnPlayGame" visible="false">
+            <image>
+                <Image url="@../res/menuPlayGame.png"/>
+            </image>
+        </ImageView>
+
+        <ImageView fx:id="btnHighScores" visible="false">
+            <image>
+                <Image url="@../res/menuBtnHighScores.png"/>
+            </image>
+        </ImageView>
+
+        <ImageView fx:id="btnSetting" visible="false">
+            <image>
+                <Image url="@../res/menuBtnSetting.png"/>
+            </image>
+        </ImageView>
+
+        <ImageView fx:id="btnExit" visible="false">
+            <image>
+                <Image url="@../res/menuBtnExit.png"/>
+            </image>
+        </ImageView>
+    </AnchorPane>
+
+    <AnchorPane fx:id="highScores">
+
+    </AnchorPane>
+
+    <AnchorPane fx:id="setting">
+
+    </AnchorPane>
+
 
 </AnchorPane>
 

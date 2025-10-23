@@ -2,61 +2,104 @@ package GameManager;
 
 import Entity.Brick;
 import Entity.GameObject;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import static javafx.application.Application.launch;
 
 
 public class MenuController {
     @FXML
+    AnchorPane mainLayout;
+    @FXML
     AnchorPane menuLayout;
     @FXML
     ImageView menuBackground;
     @FXML
     ImageView btnPlayGame;
+    @FXML
+    ImageView btnHighScores;
+    @FXML
+    ImageView btnSetting;
+    @FXML
+    ImageView btnExit;
 
     public void initialize() {
-        btnPlayGame.setVisible(false);
+        setsize();
 
-        menuLayoutEvents();
+        mainLayoutEvents();
     }
 
-    private void menuLayoutEvents() {
-        menuLayout.setOnMouseClicked(mouseEvent -> {
+    private void mainLayoutEvents() {
+        mainLayout.setOnMouseClicked(mouseEvent -> {
             System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
         });
 
-        menuLayout.setOnMouseMoved( mouseMove -> {
-            btnPlayGame.setVisible(false);
-            if(mouseMove.getX() >= btnPlayGame.getLayoutX() && mouseMove.getX() <= btnPlayGame.getLayoutX()+btnPlayGame.getFitWidth())
-                if (mouseMove.getY() >= btnPlayGame.getLayoutY() && mouseMove.getY() <= btnPlayGame.getLayoutY()+btnPlayGame.getFitHeight())
-                    btnPlayGame.setVisible(true);
-        });
 
-        menuLayout.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            menuBackground.fitWidthProperty().bind(menuLayout.widthProperty());
+        mainLayout.setOnMouseMoved( mouseMove -> {
+            setVisibleImageView(btnPlayGame, mouseMove.getX(), mouseMove.getY());
+            setVisibleImageView(btnHighScores, mouseMove.getX(), mouseMove.getY());
+            setVisibleImageView(btnSetting, mouseMove.getX(), mouseMove.getY());
+            setVisibleImageView(btnExit, mouseMove.getX(), mouseMove.getY());
 
-            btnPlayGame.setLayoutX(356 * newWidth.doubleValue() / 1280);
-            btnPlayGame.setFitWidth(495 * newWidth.doubleValue() / 1280);
-
-        });
-
-        menuLayout.heightProperty().addListener((obs, oldHeight, newHeight) -> {
-            menuBackground.fitHeightProperty().bind(menuLayout.heightProperty());
-
-            btnPlayGame.setLayoutY(207 * newHeight.doubleValue() / 720);
-            btnPlayGame.setFitHeight(106 * newHeight.doubleValue() / 720);
         });
 
         btnPlayGame.setOnMouseClicked(event -> {
-            System.out.println("Brick clicked!");
+            //levelLayout.setVisible(true);
+            //menuLayout.setVisible(false);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) mainLayout.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        btnExit.setOnMouseClicked(mouseEvent -> {
+            Platform.exit();
         });
     }
 
-    public void startGame() {
+    void setsize() {
+        update(menuBackground, 0 , 0 , 1280 , 720);
+        update(btnPlayGame, 356, 207, 495, 106);
+        update(btnHighScores, 356, 336, 495, 106);
+        update(btnSetting, 356, 462, 495, 106);
+        update(btnExit, 356, 590, 495, 106);
 
     }
+
+    void update(ImageView imageView, double x, double y, double width, double height) {
+        imageView.setLayoutX(x);
+        imageView.setLayoutY(y);
+        imageView.setFitWidth(width);
+        imageView.setFitHeight(height);
+    }
+
+
+    void setVisibleImageView(ImageView imageView, double x, double y) {
+        double left = imageView.getLayoutX();
+        double right = imageView.getLayoutX() + imageView.getFitWidth();
+        double up = imageView.getLayoutY();
+        double down = imageView.getLayoutY() + imageView.getFitHeight();
+        imageView.setVisible(false);
+        if(x >= left && x <= right)
+            if(y >= up & y <= down) imageView.setVisible(true);
+    }
+
 }
