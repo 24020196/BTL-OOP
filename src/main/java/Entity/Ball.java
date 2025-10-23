@@ -40,6 +40,7 @@ public class Ball extends GameObject {
         this.angle = Math.toRadians(80);
         this.vectorX = Math.cos(this.angle);
         this.vectorY = -Math.sin(this.angle);
+        this.onPaddle = true;
     }
 
     public void bounceOff(Paddle paddle, Brick[][] bricks, double sceneWidth, double sceneHeight) {
@@ -56,7 +57,7 @@ public class Ball extends GameObject {
         }
 
         for(int i = 0; i < 8; i++)
-            for(int j = 0; j < 11; j++) {
+            for(int j = 0; j < 12; j++) {
             Brick brick = bricks[i][j];
             if (!brick.isDestroyed() && checkCollision(brick)) {
                 brick.hit();
