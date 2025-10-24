@@ -39,6 +39,8 @@ public class LevelMapController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/game.fxml"));
                 Parent root = loader.load();
+                GameController gameController = loader.getController();
+                gameController.setLevel(1);
                 Stage stage = (Stage) levelLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.show();

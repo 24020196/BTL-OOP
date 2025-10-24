@@ -3,6 +3,7 @@ package GameManager;
 import Entity.Ball;
 import Entity.Brick;
 import Entity.Paddle;
+import Entity.VariableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -20,17 +21,25 @@ public class GameController {
     private Canvas canvas = new Canvas(1280,720);
     private GraphicsContext gc = canvas.getGraphicsContext2D();
     private Brick[][] bricks = new Brick[8][12];
+    private int[][] types;
     private Ball ball = new Ball(670, 680, 20,20);
     private Paddle paddle = new Paddle(640, 700, 120,20);
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
+    private int level = 0;
+    private String id;
+
     @FXML
     AnchorPane gameLayout;
 
     public void initialize() {
+
+        types = (new VariableValue()).brickMap(level);
         for(int i = 0; i < 8; i++)
-        for(int j = 0; j < 12; j++)
-            bricks[i][j] = new Brick(10+ j * 105, i * 45+100, 102, 42,1);
+        for(int j = 0; j < 12; j++) {
+            bricks[i][j] = new Brick(10+ j * 105, i * 45+60, 102, 42,types[i][j]);
+            //System.out.println(bricks[i][j].getImage());
+        }
 
         gameLayout.getChildren().add(canvas);
 
@@ -90,5 +99,7 @@ public class GameController {
         });
     }
 
-
+    public void setLevel(int level) {
+        this.level = level;
+    }
 }

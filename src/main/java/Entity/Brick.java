@@ -6,10 +6,17 @@ public class Brick extends GameObject {
     private double hitPoints;
     private double type;
     private boolean destroyed = false;
+    private int indexImg = 0;
     private static final Image[] brickImg = {
-            new Image(Brick.class.getResource("/res/brickUndestroy0.png").toExternalForm()),
+            new Image(Brick.class.getResource("/res/brick0.png").toExternalForm()),
             new Image(Brick.class.getResource("/res/brick1.png").toExternalForm()),
-            new Image(Brick.class.getResource("/res/brick2.png").toExternalForm())
+            new Image(Brick.class.getResource("/res/brick2.png").toExternalForm()),
+            new Image(Brick.class.getResource("/res/brickUndestroy0.png").toExternalForm()),
+            new Image(Brick.class.getResource("/res/brickUndestroy1.png").toExternalForm()),
+            new Image(Brick.class.getResource("/res/brickUndestroy2.png").toExternalForm()),
+            new Image(Brick.class.getResource("/res/brickUndestroy3.png").toExternalForm()),
+            new Image(Brick.class.getResource("/res/brickUndestroy4.png").toExternalForm()),
+            new Image(Brick.class.getResource("/res/brickUndestroy5.png").toExternalForm())
     };
     public Brick(double x, double y, double width, double height,double type) {
         super(x, y, width, height);
@@ -19,7 +26,10 @@ public class Brick extends GameObject {
 
     public void hit() {
         if (hitPoints > 0 ) hitPoints--;
-        if (hitPoints == 0) destroyed = true;
+        if (hitPoints == 0) {
+            destroyed = true;
+        }else
+            indexImg = 9;
     }
 
     public boolean isDestroyed() {
@@ -35,7 +45,14 @@ public class Brick extends GameObject {
         return  hitPoints/type;
     }
     public Image getImage() {
+        if(type < 0) {
+            if(indexImg==0)return  brickImg[3];
+            indexImg++;
+            if(indexImg == 9*3)indexImg = 0;
+            return brickImg[indexImg/3];
+        }
         return brickImg[(int) type-1];
+
 
     }
 }

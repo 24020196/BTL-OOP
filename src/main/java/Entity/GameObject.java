@@ -22,7 +22,6 @@ public abstract class GameObject {
                 x + width > other.x &&
                 y < other.y + other.height &&
                 y + height > other.y;
-
     }
 
     // có thể override trong lớp con nếu cần

@@ -14,7 +14,7 @@ public class Ball extends GameObject {
     public Ball(double x, double y, double width, double height) {
         super(x, y, width, height);
         this.speed = 10;
-        this.angle = Math.toRadians(80);
+        this.angle = Math.toRadians(90);
         this.vectorX = Math.cos(angle);
         this.vectorY = -Math.sin(angle);
         this.lives = 3;
@@ -23,6 +23,7 @@ public class Ball extends GameObject {
     public void update(double sceneWidth, double sceneHeight, Paddle paddle, Brick[][] bricks) {
         move(speed * vectorX, speed * vectorY);
         bounceOff(paddle, bricks, sceneWidth, sceneHeight);
+
 
         if (getY()> paddle.getY()) {
             lives--;
@@ -37,7 +38,7 @@ public class Ball extends GameObject {
     public void reset(Paddle paddle) {
         setX(paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0);
         setY(paddle.getY() - getHeight() );
-        this.angle = Math.toRadians(80);
+        this.angle = Math.toRadians(90);
         this.vectorX = Math.cos(this.angle);
         this.vectorY = -Math.sin(this.angle);
         this.onPaddle = true;
@@ -69,6 +70,8 @@ public class Ball extends GameObject {
                 Brick brick = bricks[i][j];
                 if (!brick.isDestroyed() && checkCollision(brick)) {
                     brick.hit();
+
+                    move(-speed * vectorX, -speed * vectorY);
                     double overlapLeft = getX() + getWidth() - brick.getX();
                     double overlapRight = brick.getX() + brick.getWidth() - getX();
                     double overlapTop = getY() + getHeight() - brick.getY();
