@@ -24,7 +24,7 @@ public class Ball extends GameObject {
         move(speed * vectorX, speed * vectorY);
         bounceOff(paddle, bricks, sceneWidth, sceneHeight);
 
-        if (getY() > sceneHeight) {
+        if (getY()> paddle.getY()) {
             lives--;
             if (lives <= 0) {
                 System.out.println("Game Over!");
@@ -42,7 +42,6 @@ public class Ball extends GameObject {
         this.vectorY = -Math.sin(this.angle);
         this.onPaddle = true;
     }
-
     public void bounceOff(Paddle paddle, Brick[][] bricks, double sceneWidth, double sceneHeight) {
         // chạm khung trái phải
         if (getX() <= 0 || getX() + getWidth() >= sceneWidth) {
@@ -53,31 +52,39 @@ public class Ball extends GameObject {
         }
 
         if (checkCollision(paddle)) {
-            vectorY*=-0.98;
+            if (checkCollision(paddle)) {
+                double ballCenter = getX() + getWidth() / 2.0;
+                double paddleCenter = paddle.getX() + paddle.getWidth() / 2.0;
+                double distance = (ballCenter - paddleCenter) / (paddle.getWidth() / 2.0); // -1..1
+                double bounceAngle = Math.toRadians(60 * distance); // góc lệch tối đa ±60°
+                vectorX = Math.sin(bounceAngle);
+                vectorY = -Math.cos(bounceAngle);
+                setY(paddle.getY() - getHeight() - 1);
+            }
+            setY(paddle.getY() - getHeight()-1);
         }
 
         for(int i = 0; i < 8; i++)
             for(int j = 0; j < 12; j++) {
-            Brick brick = bricks[i][j];
-            if (!brick.isDestroyed() && checkCollision(brick)) {
-                brick.hit();
-                double overlapLeft = getX() + getWidth() - brick.getX();
-                double overlapRight = brick.getX() + brick.getWidth() - getX();
-                double overlapTop = getY() + getHeight() - brick.getY();
-                double overlapBottom = brick.getY() + brick.getHeight() - getY();
+                Brick brick = bricks[i][j];
+                if (!brick.isDestroyed() && checkCollision(brick)) {
+                    brick.hit();
+                    double overlapLeft = getX() + getWidth() - brick.getX();
+                    double overlapRight = brick.getX() + brick.getWidth() - getX();
+                    double overlapTop = getY() + getHeight() - brick.getY();
+                    double overlapBottom = brick.getY() + brick.getHeight() - getY();
 
-                double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
-                        Math.min(overlapTop, overlapBottom));
+                    double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
+                            Math.min(overlapTop, overlapBottom));
+                    if (minOverlap == overlapLeft || minOverlap == overlapRight) {
+                        vectorX *= -0.98;
+                    } else {
+                        vectorY *= -0.98;
+                    }
+                    break;
 
-                if (minOverlap == overlapLeft || minOverlap == overlapRight) {
-                    vectorX *= -0.98;
-                } else {
-                    vectorY *= -0.98;
                 }
-                break;
-
             }
-        }
     }
 
     public boolean isOnPaddle() {

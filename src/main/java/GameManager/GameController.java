@@ -21,7 +21,7 @@ public class GameController {
     private GraphicsContext gc = canvas.getGraphicsContext2D();
     private Brick[][] bricks = new Brick[8][12];
     private Ball ball = new Ball(670, 680, 20,20);
-    private Paddle paddle = new Paddle(640, 700, 80,20);
+    private Paddle paddle = new Paddle(640, 700, 120,20);
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
     @FXML

@@ -7,7 +7,7 @@ public class Brick extends GameObject {
     private double type;
     private boolean destroyed = false;
     private static final Image[] brickImg = {
-            new Image(Brick.class.getResource("/res/brick0.png").toExternalForm()),
+            new Image(Brick.class.getResource("/res/brickUndestroy0.png").toExternalForm()),
             new Image(Brick.class.getResource("/res/brick1.png").toExternalForm()),
             new Image(Brick.class.getResource("/res/brick2.png").toExternalForm())
     };
