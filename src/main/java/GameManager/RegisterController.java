@@ -23,13 +23,13 @@ public class RegisterController {
         String pass = tfNewPass.getText();
         String confirm = tfConfirmPass.getText();
 
-        // ✅ Kiểm tra nhập lại mật khẩu
+        //Kiểm tra nhập lại mật khẩu
         if (!pass.equals(confirm)) {
             showAlert("Lỗi", "Mật khẩu nhập lại không khớp!");
             return;
         }
 
-        // ✅ Gọi database
+        //Gọi database
         boolean success = userDAO.register(user, pass);
 
         if (success) {
