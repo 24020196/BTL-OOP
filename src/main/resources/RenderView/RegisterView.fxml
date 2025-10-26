@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="12" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="GameManager.RegisterController"
+      style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: #888;"
+      maxWidth="300">
+
+    <Label text="ĐĂNG KÝ" style="-fx-font-size:20; -fx-font-weight:bold;"/>
+
+    <TextField fx:id="tfNewUser" promptText="Username"/>
+    <PasswordField fx:id="tfNewPass" promptText="Password"/>
+    <PasswordField fx:id="tfConfirmPass" promptText="Confirm Password"/>
+
+    <Button text="Tạo tài khoản" onAction="#onRegister" maxWidth="Infinity"/>
+    <Button text="Quay lại đăng nhập" onAction="#goLogin" maxWidth="Infinity"/>
+
+</VBox>
