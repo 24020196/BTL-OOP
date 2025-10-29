@@ -35,7 +35,7 @@ public class GameController {
         gameLayout.getChildren().add(canvas);
 
 
-        Thread loopThread = new Thread(() -> {
+        Thread gameloop = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 if(!ball.isOnPaddle()) {
                     ball.update(canvas.getWidth(), canvas.getHeight(), paddle, bricks);
@@ -43,6 +43,26 @@ public class GameController {
                 {
                     ball.reset(paddle);
                 }
+                //draw(gc);
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        });
+        gameloop.start();
+
+
+
+        Thread loopThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                /*if(!ball.isOnPaddle()) {
+                    ball.update(canvas.getWidth(), canvas.getHeight(), paddle, bricks);
+                } else
+                {
+                    ball.reset(paddle);
+                }*/
                 draw(gc);
                 try {
                     Thread.sleep(30);
@@ -52,6 +72,7 @@ public class GameController {
             }
         });
         loopThread.start();
+
         //loopThread.interrupt();
 
         gameLayoutEvents();
