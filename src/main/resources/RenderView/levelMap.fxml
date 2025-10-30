@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="levelLayout" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GameManager.LevelMapController">
+
+    <ImageView fx:id="levelMapBackground">
+        <image>
+            <Image url="@../res/levelBackground.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level1" fitHeight="95.0" fitWidth="110.0" layoutX="22.0" layoutY="171.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet0.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level2" fitHeight="75.0" fitWidth="95.0" layoutX="484.0" layoutY="88.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet1.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level3" fitHeight="75.0" fitWidth="95.0" layoutX="925.0" layoutY="132.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet2.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level4" fitHeight="85.0" fitWidth="75.0" layoutX="1181.0" layoutY="379.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet3.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level" 5fitHeight="75.0" fitWidth="95.0" layoutX="900.0" layoutY="604.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet4.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level6" fitHeight="75.0" fitWidth="95.0" layoutX="477.0" layoutY="611.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet5.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level7" fitHeight="75.0" fitWidth="95.0" layoutX="87.0" layoutY="438.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet6.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level8" fitHeight="75.0" fitWidth="95.0" layoutX="502.0" layoutY="316.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet7.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level9" fitHeight="75.0" fitWidth="95.0" layoutX="933.0" layoutY="384.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet8.png" />
+        </image>
+    </ImageView>
+</AnchorPane>
