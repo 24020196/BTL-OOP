@@ -27,6 +27,7 @@ public class Brick extends GameObject {
     public void hit() {
         if (hitPoints > 0 ) hitPoints--;
         if (hitPoints == 0) {
+
             destroyed = true;
         }else
             indexImg = 9;

@@ -1,7 +1,6 @@
 package Entity;
 
 public class VariableValue {
-
     public int[][] brickMap(int level){
         int[][] tmp;
         switch (level) {

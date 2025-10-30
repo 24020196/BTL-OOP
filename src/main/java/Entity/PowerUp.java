@@ -1,37 +1,31 @@
 package Entity;
 
-public class PowerUp {
-    public int powerUpLeft = 10;
+import javafx.scene.image.Image;
 
-    /** types
-     *      powerUp_BigPaddle = 0;
-     *      powerUp_SmallPaddle = 1;
-     *      powerUp_Fast = 2;
-     *      powerUp_Slow = 3;
-     *      powerUp_Shoot = 4;
-     *      powerUp_FireBall = 5;
-     */
-    public void setPowerUp(int type) {
-        switch (type) {
-            case 0:
+public class PowerUp extends GameObject{
+    private int type;
+    public static final int width = 80;
+    public static final int heigh = 20;
+    private static final Image[] powerUpImg = {
+            new Image(PowerUp.class.getResource("/res/powerUp_BigPaddle.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/powerUp_SmallPaddle.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/powerUp_Fast.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/powerUp_Slow.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/powerUp_Shoot.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/powerUp_FireBall.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/powerUp_TripleBall.png").toExternalForm())
+    };
+    public PowerUp(double x, double y,int type) {
+        super(x,y,width,heigh);
+        this.type = type;
+    }
 
-                break;
-            case 1:
+    public int getType() {
+        return type;
+    }
 
-                break;
-            case 2:
-
-                break;
-            case 3:
-
-                break;
-            case 4:
-
-                break;
-            case 5:
-
-                break;
-        }
+    public Image getImage() {
+        return powerUpImg[type];
     }
 }
 
