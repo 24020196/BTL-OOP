@@ -45,7 +45,7 @@ public class RegisterController {
         try {
             Stage stage = (Stage) tfNewUser.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/LoginView.fxml"));
-            Scene scene = new Scene(loader.load(), 300, 250);
+            Scene scene = new Scene(loader.load(), 300, 400);
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {

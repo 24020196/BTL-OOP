@@ -17,6 +17,7 @@
     </ImageView>
 
     <AnchorPane fx:id="menuLayout">
+
         <ImageView fx:id="btnPlayGame" visible="false">
             <image>
                 <Image url="@../res/menuPlayGame.png"/>

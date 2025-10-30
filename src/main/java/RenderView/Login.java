@@ -9,7 +9,7 @@ public class Login extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/LoginView.fxml"));
-        Scene scene = new Scene(loader.load(), 300, 250); // Kích thước nhỏ
+        Scene scene = new Scene(loader.load(), 300, 450); // Kích thước nhỏ
         stage.setTitle("Đăng nhập");
         stage.setScene(scene);
         stage.setResizable(false);

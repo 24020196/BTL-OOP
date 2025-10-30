@@ -8,6 +8,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
@@ -16,6 +17,7 @@ import java.io.*;
 
 public class LoginController {
 
+    public ImageView backgroundLogin;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
@@ -50,7 +52,7 @@ public class LoginController {
                 new File("usercache.txt").delete();
             }
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/menu.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/Menu.fxml"));
                 Scene menuScene = new Scene(loader.load(), 1280, 720);
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.setScene(menuScene);
@@ -69,7 +71,7 @@ public class LoginController {
         try {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/RegisterView.fxml"));
-            Scene scene = new Scene(loader.load(), 350, 320);
+            Scene scene = new Scene(loader.load(), 300, 450);
             stage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();
