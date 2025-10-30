@@ -10,6 +10,7 @@ public class Ball extends GameObject {
     private double angle;
     private double vectorX;
     private double vectorY;
+    private boolean fireBall = false;
     private int lives;
     private static final Image[] ballImg = {
             new Image(PowerUp.class.getResource("/res/ball0.png").toExternalForm()),
@@ -50,6 +51,7 @@ public class Ball extends GameObject {
         this.vectorX = Math.cos(this.angle);
         this.vectorY = -Math.sin(this.angle);
         this.onPaddle = true;
+        this.fireBall = false;
     }
     public void bounceOff(Paddle paddle, Brick[][] bricks, double sceneWidth, double sceneHeight) {
         // chạm khung trái phải
@@ -95,14 +97,27 @@ public class Ball extends GameObject {
                     } else {
                         vectorY *= -0.98;
                     }
-                    break;
+                    if(fireBall) {
+                        fireBall = false;
+                        for (int di = -1; di <= 1; di++) {
+                            for (int dj = -1; dj <= 1; dj++) {
+                                int ni = i + di;
+                                int nj = j + dj;
+                                if (ni >= 0 && ni < 8 && nj >= 0 && nj < 12) {
+                                    bricks[ni][nj].setHitPoints(0);
+                                }
+                            }
+                        }
 
+                    }
+                    break;
                 }
             }
     }
 
     public Image getImg(int index)
     {
+        if(fireBall) return ballImg[2];
         return ballImg[index];
     }
 
@@ -132,5 +147,13 @@ public class Ball extends GameObject {
 
     public double getSpeed() {
         return speed;
+    }
+
+    public boolean isFireBall() {
+        return fireBall;
+    }
+
+    public void setFireBall(boolean fireBall) {
+        this.fireBall = fireBall;
     }
 }

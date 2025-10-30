@@ -27,20 +27,27 @@ public class Brick extends GameObject {
     public void hit() {
         if (hitPoints > 0 ) hitPoints--;
         if (hitPoints == 0) {
-
             destroyed = true;
         }else
             indexImg = 9;
     }
 
+
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    public void setHitPoints(double hitPoints) {
+        this.hitPoints = hitPoints;
+        if (hitPoints == 0)destroyed = true;
     }
 
     public double getType() {
         return type;
     }
     public double getHp() { return hitPoints; }
+
+
 
     public double getOpacity() {
         return  hitPoints/type;

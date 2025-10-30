@@ -35,7 +35,7 @@ public class GameController {
     private Queue<GameObject> bulletDelete = new LinkedList<>();
     private int bulletLeft = 0;
     private int bulletCooldown = 0;
-    private static final Image bulletImg = new Image(Brick.class.getResource("/res/ball2.png").toExternalForm());
+    private static final Image bulletImg = new Image(Brick.class.getResource("/res/ball1.png").toExternalForm());
     private VariableValue variableValue = new VariableValue();
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
@@ -85,6 +85,7 @@ public class GameController {
             if(ball.newDestroyBrick && powerUpLeft > 0) {
                 if(powerUpLeft>=Math.random()*brickLeft()) {
                     powerUpLeft--;
+                    //powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) 5));
                     powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) (Math.random()*6)));
                 }
             }
@@ -99,7 +100,7 @@ public class GameController {
             if(tmpPowerUp.checkCollision(paddle)) {
                 setPowerUp(tmpPowerUp.getType());
                 powerUpDelete.add(tmpPowerUp);
-            }
+            }else
             if(tmpPowerUp.getY()>paddle.getY()) {
                 powerUpDelete.add(tmpPowerUp);
             }
@@ -118,6 +119,7 @@ public class GameController {
             System.out.println(bulletLeft);
             bullet.add(new GameObject(paddle.getX() + paddle.getWidth()/2, paddle.getY() - 10, 10,10));
         } else bulletCooldown += 25;
+        boolean tempBreak = false;
         for(GameObject tmpBullet : bullet) {
             tmpBullet.move(0,-12);
             for(int i = 0; i < 8; i++) {
@@ -126,10 +128,13 @@ public class GameController {
                     if(!tempBrick.isDestroyed() && tempBrick.checkCollision(tmpBullet)) {
                         tempBrick.hit();
                         bulletDelete.add(tmpBullet);
+                        tempBreak = true;
+                        break;
                     }
                 }
+                if(tempBreak)break;
             }
-            if(tmpBullet.getY() < 0)
+            if(tmpBullet.getY() < 0 && !tempBreak)
                 bulletDelete.add(tmpBullet);
         }
         for(GameObject tmpBulletDelete : bulletDelete)
@@ -142,7 +147,7 @@ public class GameController {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for(int i = 0; i < ball.getLives(); i++)
-            gc.drawImage(ball.getImg(i), 1280 - (ball.getWidth() + 5) * i, 10,
+            gc.drawImage(ballImg, 1280 - (ball.getWidth() + 5) * i, 10,
                     ball.getWidth(), ball.getHeight());
         for(int i = 0; i < 8; i++) {
             for (int j = 0; j < 12; j++) {
@@ -164,7 +169,7 @@ public class GameController {
                     tmpBullet.getWidth(), tmpBullet.getHeight());
         }
         gc.setGlobalAlpha(1);
-        gc.drawImage(ballImg, ball.getX(), ball.getY(),
+        gc.drawImage(ball.getImg(0), ball.getX(), ball.getY(),
                 ball.getWidth(), ball.getHeight());
 
         gc.drawImage(paddleImg, paddle.getX() , paddle.getY(),
@@ -208,7 +213,7 @@ public class GameController {
                 bulletLeft = 30;
                 break;
             case 5:
-
+                ball.setFireBall(true);
                 break;
             case 6:
 
