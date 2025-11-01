@@ -1,6 +1,6 @@
 package GameManager;
 
-import GameDatabase.UserDAO;
+import GameDatabase.UserDataAccessObject;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -23,7 +23,7 @@ public class LoginController {
     @FXML private Label messageLabel;
     @FXML private CheckBox rememberCheck;
 
-    private UserDAO userDAO = new UserDAO();
+    private UserDataAccessObject userDataAccessObject = new UserDataAccessObject();
 
     @FXML
     public void initialize() {
@@ -42,7 +42,7 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        if (userDAO.login(username, password)) {
+        if (userDataAccessObject.login(username, password)) {
             if (rememberCheck.isSelected()) {
                 try (PrintWriter pw = new PrintWriter("usercache.txt")) {
                     pw.println(username);

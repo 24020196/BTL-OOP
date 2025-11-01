@@ -2,7 +2,7 @@ package GameDatabase;
 
 import java.sql.*;
 
-public class ScoreDAO {
+public class ScoreDataAccessObject {
     public void saveScore(String username, int score, int level) {
         String sql = "INSERT INTO scores (username, score, level) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();

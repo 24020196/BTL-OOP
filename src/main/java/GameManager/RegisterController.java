@@ -1,6 +1,6 @@
 package GameManager;
 
-import GameDatabase.UserDAO;
+import GameDatabase.UserDataAccessObject;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,30 +15,34 @@ public class RegisterController {
     @FXML private PasswordField tfNewPass;
     @FXML private PasswordField tfConfirmPass;
 
-    private UserDAO userDAO = new UserDAO();
+    private UserDataAccessObject userDataAccessObject = new UserDataAccessObject();
 
     @FXML
     public void onRegister() {
-        String user = tfNewUser.getText();
-        String pass = tfNewPass.getText();
-        String confirm = tfConfirmPass.getText();
+        String user = tfNewUser.getText().trim();
+        String pass = tfNewPass.getText().trim();
+        String confirm = tfConfirmPass.getText().trim();
 
-        //Kiểm tra nhập lại mật khẩu
+        if (user.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
+            showAlert("Lỗi", "Không được để trống bất kỳ trường nào!");
+            return;
+        }
+
         if (!pass.equals(confirm)) {
             showAlert("Lỗi", "Mật khẩu nhập lại không khớp!");
             return;
         }
 
-        //Gọi database
-        boolean success = userDAO.register(user, pass);
+        String result = userDataAccessObject.register(user, pass);
 
-        if (success) {
+        if (result.equals("SUCCESS")) {
             showAlert("Thành công", "Đăng ký thành công! Mời bạn đăng nhập.");
             goLogin();
         } else {
-            showAlert("Lỗi", "Tên đăng nhập đã tồn tại hoặc không hợp lệ!");
+            showAlert("Lỗi đăng ký", result);
         }
     }
+
 
     @FXML
     public void goLogin() {

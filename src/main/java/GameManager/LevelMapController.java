@@ -71,5 +71,4 @@ public class LevelMapController {
         if(x >= left && x <= right)
             if(y >= up & y <= down) imageView.setVisible(true);
     }
-
 }

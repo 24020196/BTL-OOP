@@ -2,58 +2,67 @@ package GameDatabase;
 
 import java.sql.*;
 import java.util.regex.Pattern;
-import java.util.Scanner;
 
-public class UserDAO {
+public class UserDataAccessObject {
 
     private boolean isValid(String input) {
         return input != null && input.length() >= 6 &&
                 Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$", input);
     }
 
-    public boolean register(String username, String password) {
+    /**
+     * Đăng ký tài khoản → Trả về chuỗi thông báo
+     * "SUCCESS" = đăng ký thành công
+     * Còn lại trả về nội dung lỗi
+     */
+    public String register(String username, String password) {
+
         if (!isValid(username)) {
-            System.out.println("Tên đăng ký phải có ít nhất 6 ký tự và chứa cả chữ lẫn số.");
-            return false;
+            return "Tên đăng nhập phải có ít nhất 6 ký tự và chứa cả chữ và số!";
         }
+
         if (!isValid(password)) {
-            System.out.println("Mật khẩu phải có ít nhất 6 ký tự và chứa cả chữ lẫn số.");
-            return false;
+            return "Mật khẩu phải có ít nhất 6 ký tự và chứa cả chữ và số!";
         }
+
         String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);
             stmt.setString(2, password);
             stmt.executeUpdate();
-            return true;
+            return "SUCCESS";
 
         } catch (SQLException e) {
-            System.out.println(" Lỗi khi đăng ký: " + e.getMessage());
-            return false;
+
+            // Kiểm tra trùng username
+            if (e.getMessage().toLowerCase().contains("duplicate")) {
+                return "Tên đăng nhập đã tồn tại!";
+            }
+
+            return "Lỗi hệ thống: " + e.getMessage();
         }
     }
 
+    /**
+     * Đăng nhập → true = đúng, false = sai
+     */
     public boolean login(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, username);
-            stmt.setString(2, password);
+            stmt.setString(1, username.trim());
+            stmt.setString(2, password.trim());
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                System.out.println("Đăng nhập thành công!");
-                return true;
-            } else {
-                System.out.println("Sai tên đăng nhập hoặc mật khẩu.");
-                return false;
-            }
+            return rs.next();
 
         } catch (SQLException e) {
-            System.out.println("⚠Lỗi khi đăng nhập: " + e.getMessage());
+            System.out.println("⚠ Lỗi khi đăng nhập: " + e.getMessage());
             return false;
         }
     }
