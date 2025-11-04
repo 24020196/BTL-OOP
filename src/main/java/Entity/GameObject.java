@@ -1,6 +1,6 @@
 package Entity;
 
-public abstract class GameObject {
+public class GameObject {
     protected double x, y, width, height;
     protected double dx, dy; // vận tốc theo trục X/Y
 

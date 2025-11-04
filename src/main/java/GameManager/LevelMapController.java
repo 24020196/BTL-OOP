@@ -13,12 +13,18 @@ import javafx.stage.Stage;
 
 
 public class LevelMapController {
-    @FXML
-    AnchorPane levelLayout;
-    @FXML
-    ImageView levelMapBackground;
-    @FXML
-    ImageView level1;
+    @FXML AnchorPane levelLayout;
+    @FXML ImageView levelMapBackground;
+    @FXML ImageView level1;
+    @FXML ImageView level2;
+    @FXML ImageView level3;
+    @FXML ImageView level4;
+    @FXML ImageView level5;
+    @FXML ImageView level6;
+    @FXML ImageView level7;
+    @FXML ImageView level8;
+    @FXML ImageView level9;
+
 
     public void initialize() {
         setsize();
@@ -35,24 +41,37 @@ public class LevelMapController {
 
         });
 
-        level1.setOnMouseClicked(mouseEvent -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/game.fxml"));
-                Parent root = loader.load();
-                Stage stage = (Stage) levelLayout.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.show();
+        ImageView[] levels = {level1, level2, level3, level4, level5, level6, level7, level8, level9};
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        for (int i = 0; i < levels.length; i++) {
+            final int levelIndex = i + 1;
+            levels[i].setOnMouseClicked(event -> {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/game.fxml"));
+                    Parent root = loader.load();
+                    Stage stage = (Stage) levelLayout.getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                    System.out.println("Loading level " + levelIndex);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     void setsize() {
 
         update(levelMapBackground,0,0,1280,720);
         update(level1,50,100,180,125);
+        update(level2,50,100,180,125);
+        update(level3,50,100,180,125);
+        update(level4,50,100,180,125);
+        update(level5,50,100,180,125);
+        update(level6,50,100,180,125);
+        update(level7,50,100,180,125);
+        update(level8,50,100,180,125);
+        update(level9,50,100,180,125);
     }
 
     void update(ImageView imageView, double x, double y, double width, double height) {
@@ -71,4 +90,5 @@ public class LevelMapController {
         if(x >= left && x <= right)
             if(y >= up & y <= down) imageView.setVisible(true);
     }
+
 }

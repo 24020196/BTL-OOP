@@ -1,10 +1,17 @@
 package GameManager;
 
+import Entity.Brick;
+import Entity.GameObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -52,7 +59,7 @@ public class MenuController {
             //levelLayout.setVisible(true);
             //menuLayout.setVisible(false);
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/LevelMap.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
                 Parent root = loader.load();
                 Stage stage = (Stage) mainLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));
