@@ -40,21 +40,13 @@ public class GameController {
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
     private int level = 0;
-    private String id;
+    private final Object lock = new Object();
 
     @FXML
     AnchorPane gameLayout;
 
     public void initialize() {
-
-        bricktypes = variableValue.brickMap(level);
-        for(int i = 0; i < 8; i++)
-        for(int j = 0; j < 12; j++) {
-            bricks[i][j] = new Brick(10+ j * 105, i * 45+60, 102, 42,bricktypes[i][j]);
-            //System.out.println(bricks[i][j].getImage());
-        }
         gameLayout.getChildren().add(canvas);
-
         AnimationTimer uiLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -65,9 +57,12 @@ public class GameController {
 
         Thread LogicLoop = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
+
+                paddle.move();
                 renderBall();
                 renderPowerUp();
                 renderBullet();
+                endgame();
                 try {
                     Thread.sleep(25);
                 } catch (InterruptedException e) {
@@ -79,6 +74,58 @@ public class GameController {
 
         gameLayoutEvents();
     }
+
+    public void startGame() {
+
+        bricktypes = variableValue.brickMap(level);
+        for(int i = 0; i < 8; i++)
+        for(int j = 0; j < 12; j++) {
+            bricks[i][j] = new Brick(10+ j * 105, i * 45+60, 102, 42,bricktypes[i][j]);
+            if(bricktypes[i][j] == 0)bricks[i][j].setHitPoints(0);
+        }
+    }
+
+    private void gameLayoutEvents() {
+        canvas.setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case A:
+                    paddle.setLeft(true);
+                    paddle.setRight(false);
+                    break;
+                case D:
+                    paddle.setRight(true);
+                    paddle.setLeft(false);
+                    break;
+                case SPACE:
+                    ball.setOnPaddle(false);
+                    break;
+            }
+        });
+        canvas.setOnKeyReleased(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case A:
+                    paddle.setLeft(false);
+                    paddle.setRight(false);
+
+                    break;
+                case D:
+                    paddle.setRight(false);
+                    paddle.setLeft(false);
+                    break;
+            }
+        });
+        canvas.setFocusTraversable(true);
+        canvas.requestFocus();
+
+        gameLayout.setOnMouseMoved( mouseMove -> {
+
+        });
+
+        gameLayout.setOnMouseClicked(mouseEvent -> {
+
+        });
+    }
+
     private void renderBall() {
         if(!ball.isOnPaddle()) {
             ball.update(canvas.getWidth(), canvas.getHeight(), paddle, bricks);
@@ -94,6 +141,7 @@ public class GameController {
             ball.reset(paddle);
         }
     }
+
     private void renderPowerUp() {
         for(PowerUp tmpPowerUp:powerUp) {
             tmpPowerUp.move(0,3);
@@ -111,6 +159,7 @@ public class GameController {
         powerUpDelete.clear();
 
     }
+
 
     private  void renderBullet() {
         if(bulletLeft > 0 && bulletCooldown >= 300) {
@@ -141,6 +190,13 @@ public class GameController {
             bullet.remove(tmpBulletDelete);
         bulletDelete.clear();
     }
+
+    private void endgame() {
+        if(brickLeft()==0) {
+            System.out.println();
+        }
+    }
+
     private void draw() {
         Brick tempBrick;
         //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -176,15 +232,7 @@ public class GameController {
                 paddle.getWidth(), paddle.getHeight());
     }
 
-    private void gameLayoutEvents() {
-        gameLayout.setOnMouseMoved( mouseMove -> {
-            paddle.setX(Math.min(mouseMove.getX(),canvas.getWidth()-paddle.getWidth()));
-        });
 
-        gameLayout.setOnMouseClicked(mouseEvent -> {
-            ball.setOnPaddle(false);
-        });
-    }
 
     /** types
      *      powerUp_BigPaddle = 0;
@@ -228,8 +276,6 @@ public class GameController {
                 if(!bricks[i][j].isDestroyed())temp++;
         return temp;
     }
-
-
 
     public void setLevel(int level) {
         this.level = level;

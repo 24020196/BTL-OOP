@@ -7,6 +7,7 @@ module org {
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
     requires transitive javafx.graphics;
+    requires java.sql;
 
     opens Entity to javafx.fxml;
     exports Entity;

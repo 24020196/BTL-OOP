@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Menu extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Menu.class.getResource("game.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Menu.class.getResource("levelMap.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
         stage.setTitle("Akanoid");
         stage.setScene(scene);

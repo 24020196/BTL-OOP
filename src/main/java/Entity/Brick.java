@@ -28,10 +28,8 @@ public class Brick extends GameObject {
         if (hitPoints > 0 ) hitPoints--;
         if (hitPoints == 0) {
             destroyed = true;
-        }else
-            indexImg = 9;
+        }else indexImg = 9;
     }
-
 
     public boolean isDestroyed() {
         return destroyed;
@@ -50,17 +48,19 @@ public class Brick extends GameObject {
 
 
     public double getOpacity() {
-        return  hitPoints/type;
+        return  Math.abs(hitPoints/type);
     }
     public Image getImage() {
         if(type < 0) {
-            if(indexImg==0)return  brickImg[3];
+            if(indexImg == 0) return brickImg[3];
             indexImg++;
             if(indexImg == 9*3)indexImg = 0;
             return brickImg[indexImg/3];
         }
+        if(type > 0)
         return brickImg[(int) type-1];
 
+        return null;
 
     }
 }
