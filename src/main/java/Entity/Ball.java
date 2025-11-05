@@ -36,7 +36,7 @@ public class Ball extends GameObject {
             if (getY() > paddle.getY()) {
                 lives--;
                 if (lives <= 0) {
-                    System.out.println("Game Over!");
+                    //System.out.println("Game Over!");
                 } else {
                     reset(paddle);
                 }

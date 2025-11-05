@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import static javafx.application.Application.launch;
 
@@ -30,8 +31,6 @@ public class MenuController {
     @FXML ImageView btnSetting;
     @FXML ImageView btnExit;
 
-    public String userName;
-    public User user = new User(userName);
     private ScoreDataAccessObject data = new ScoreDataAccessObject();
 
     public void initialize() {
@@ -40,13 +39,14 @@ public class MenuController {
     }
 
     public void connectDatabase() {
-        data.getPoint(userName, user);
-        System.out.println(user.getLevels());
+        data.getPoint(User.getUser().getUsername(),User.getUser());
+        User.getUser().highScores.clear();
+        data.getHighScorces();
     }
 
     private void mainLayoutEvents() {
         mainLayout.setOnMouseClicked(mouseEvent -> {
-            System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
+            //System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
         });
 
 
@@ -65,8 +65,21 @@ public class MenuController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
                 Parent root = loader.load();
                 LevelMapController levelMapController = loader.getController();
-                levelMapController.user = user;
                 levelMapController.drawStar();
+                Stage stage = (Stage) mainLayout.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        btnHighScores.setOnMouseClicked(event -> {
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/highScore.fxml"));
+                Parent root = loader.load();
                 Stage stage = (Stage) mainLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.show();

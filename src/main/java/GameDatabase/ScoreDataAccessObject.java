@@ -1,23 +1,21 @@
 package GameDatabase;
 
 import Entity.User;
+import javafx.util.Pair;
 
 import java.sql.*;
 
 public class ScoreDataAccessObject {
 
-    public void showScores(String username) {
-        String sql = "SELECT * FROM users WHERE username = ? ";
+    public void getHighScorces() {
+        String sql = "SELECT high_scores,username FROM users ORDER BY high_scores DESC LIMIT 5";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 System.out.println("=== BẢNG ĐIỂM ===");
                 while (rs.next()) {
-                    System.out.printf("%s - %d điểm - Màn %d%n",
-                            rs.getString("username"),
-                            rs.getInt("LevelPoint"),
-                            rs.getInt("levels"));
+                    User.getUser().highScores.add(new Pair<>(rs.getString("username")
+                            , rs.getInt("high_scores")));
                 }
             }
 

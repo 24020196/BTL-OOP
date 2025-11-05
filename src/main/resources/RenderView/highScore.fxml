@@ -8,8 +8,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<AnchorPane fx:id="endGameLayout" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="GameManager.EndGameController"
+<AnchorPane fx:id="highScoresLayout" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="GameManager.HighScoresController"
             prefWidth="1280"  prefHeight="720">
 
 

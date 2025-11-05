@@ -27,7 +27,6 @@ public class LevelMapController {
     @FXML ImageView level8;
     @FXML ImageView level9;
 
-    public User user;
 
     public void initialize() {
         setsize();
@@ -35,7 +34,7 @@ public class LevelMapController {
     }
 
     public void drawStar() {
-        System.out.println(user.getLevelPoint());
+        System.out.println(User.getUser().getLevelPoint());
 
     }
 

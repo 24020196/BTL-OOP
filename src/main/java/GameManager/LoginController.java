@@ -53,7 +53,7 @@ public class LoginController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/Menu.fxml"));
                 Scene menuScene = new Scene(loader.load(), 1280, 720);
                 MenuController menu = loader.getController();
-                menu.userName = username;
+                User.getUser().setUsername(username);
                 menu.connectDatabase();
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.setScene(menuScene);
