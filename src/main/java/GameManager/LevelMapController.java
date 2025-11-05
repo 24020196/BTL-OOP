@@ -13,8 +13,10 @@ import javafx.stage.Stage;
 
 
 public class LevelMapController {
-    @FXML AnchorPane levelLayout;
-    @FXML ImageView levelMapBackground;
+    @FXML
+    AnchorPane levelLayout;
+    @FXML
+    ImageView levelMapBackground;
     @FXML ImageView level1;
     @FXML ImageView level2;
     @FXML ImageView level3;
@@ -24,7 +26,6 @@ public class LevelMapController {
     @FXML ImageView level7;
     @FXML ImageView level8;
     @FXML ImageView level9;
-
 
     public void initialize() {
         setsize();
@@ -47,8 +48,12 @@ public class LevelMapController {
             final int levelIndex = i + 1;
             levels[i].setOnMouseClicked(event -> {
                 try {
+
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/game.fxml"));
                     Parent root = loader.load();
+                    GameController gameController = loader.getController();
+                    gameController.setLevel(levelIndex);
+                    gameController.startGame();
                     Stage stage = (Stage) levelLayout.getScene().getWindow();
                     stage.setScene(new Scene(root));
                     stage.show();
@@ -63,15 +68,6 @@ public class LevelMapController {
     void setsize() {
 
         update(levelMapBackground,0,0,1280,720);
-        update(level1,50,100,180,125);
-        update(level2,50,100,180,125);
-        update(level3,50,100,180,125);
-        update(level4,50,100,180,125);
-        update(level5,50,100,180,125);
-        update(level6,50,100,180,125);
-        update(level7,50,100,180,125);
-        update(level8,50,100,180,125);
-        update(level9,50,100,180,125);
     }
 
     void update(ImageView imageView, double x, double y, double width, double height) {

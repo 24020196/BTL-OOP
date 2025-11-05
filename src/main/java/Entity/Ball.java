@@ -1,5 +1,7 @@
 package Entity;
 
+import javafx.scene.image.Image;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +10,19 @@ public class Ball extends GameObject {
     private double angle;
     private double vectorX;
     private double vectorY;
+    private boolean fireBall = false;
     private int lives;
+    private static final Image[] ballImg = {
+            new Image(PowerUp.class.getResource("/res/ball0.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/ball1.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/ball2.png").toExternalForm())
+    };
     private boolean onPaddle = true;
+    public boolean newDestroyBrick = false;
 
     public Ball(double x, double y, double width, double height) {
         super(x, y, width, height);
-        this.speed = 10;
+        this.speed = 8;
         this.angle = Math.toRadians(90);
         this.vectorX = Math.cos(angle);
         this.vectorY = -Math.sin(angle);
@@ -21,41 +30,38 @@ public class Ball extends GameObject {
     }
 
     public void update(double sceneWidth, double sceneHeight, Paddle paddle, Brick[][] bricks) {
-        move(speed * vectorX, speed * vectorY);
-        bounceOff(paddle, bricks, sceneWidth, sceneHeight);
-
-
-        if (getY() > paddle.getY()) {
-            lives--;
-            if (lives <= 0) {
-                System.out.println("Game Over!");
-            } else {
-                reset(paddle);
+        if(lives>0) {
+            move(speed * vectorX, speed * vectorY);
+            bounceOff(paddle, bricks, sceneWidth, sceneHeight);
+            if (getY() > paddle.getY()) {
+                lives--;
+                if (lives <= 0) {
+                    System.out.println("Game Over!");
+                } else {
+                    reset(paddle);
+                }
             }
         }
     }
 
     public void reset(Paddle paddle) {
         setX(paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0);
-        setY(paddle.getY() - getHeight());
+        setY(paddle.getY() - getHeight() );
         this.angle = Math.toRadians(90);
         this.vectorX = Math.cos(this.angle);
         this.vectorY = -Math.sin(this.angle);
         this.onPaddle = true;
+        this.fireBall = false;
     }
-
     public void bounceOff(Paddle paddle, Brick[][] bricks, double sceneWidth, double sceneHeight) {
         // chạm khung trái phải
-        if (getX() <= 0) {
-            setX(0.1);
-            vectorX = Math.abs(vectorX);  // đảm bảo đi sang phải
-        }
-        else if (getX() + getWidth() >= sceneWidth) {
-            setX(sceneWidth - getWidth() - 0.1);
-            vectorX = -Math.abs(vectorX); // đảm bảo đi sang trái
+        if (getX() <= 0 || getX() + getWidth() >= sceneWidth) {
+            move(-speed * vectorX, -speed * vectorY);
+            vectorX *= -0.98;
         }
         if (getY() <= 0) {
-            vectorY *= -0.98;
+            move(-speed * vectorX, -speed * vectorY);
+            vectorY*=-0.98;
         }
 
         if (checkCollision(paddle)) {
@@ -64,19 +70,20 @@ public class Ball extends GameObject {
                 double paddleCenter = paddle.getX() + paddle.getWidth() / 2.0;
                 double distance = (ballCenter - paddleCenter) / (paddle.getWidth() / 2.0); // -1..1
                 double bounceAngle = Math.toRadians(60 * distance); // góc lệch tối đa ±60°
+                move(-speed * vectorX, -speed * vectorY);
                 vectorX = Math.sin(bounceAngle);
                 vectorY = -Math.cos(bounceAngle);
                 setY(paddle.getY() - getHeight() - 1);
             }
-            setY(paddle.getY() - getHeight() - 1);
+            setY(paddle.getY() - getHeight()-1);
         }
 
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 12; j++) {
+        for(int i = 0; i < 8; i++)
+            for(int j = 0; j < 12; j++) {
                 Brick brick = bricks[i][j];
                 if (!brick.isDestroyed() && checkCollision(brick)) {
                     brick.hit();
-
+                    newDestroyBrick = brick.isDestroyed();
                     move(-speed * vectorX, -speed * vectorY);
                     double overlapLeft = getX() + getWidth() - brick.getX();
                     double overlapRight = brick.getX() + brick.getWidth() - getX();
@@ -85,30 +92,37 @@ public class Ball extends GameObject {
 
                     double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
                             Math.min(overlapTop, overlapBottom));
-                    if (minOverlap == overlapLeft) {
-                        // đẩy bóng ra bên trái
-                        setX(brick.getX() - getWidth() - 0.5);
-                        vectorX = -vectorX;
+                    if (minOverlap == overlapLeft || minOverlap == overlapRight) {
+                        vectorX *= -0.98;
+                    } else {
+                        vectorY *= -0.98;
                     }
-                    else if (minOverlap == overlapRight) {
-                        // đẩy bóng ra bên phải
-                        setX(brick.getX() + brick.getWidth() + 0.5);
-                        vectorX = -vectorX;
-                    }
-                    else if (minOverlap == overlapTop) {
-                        // đẩy bóng lên trên
-                        setY(brick.getY() - getHeight() - 0.5);
-                        vectorY = -vectorY;
-                    }
-                    else {
-                        // đẩy bóng xuống dưới
-                        setY(brick.getY() + brick.getHeight() + 0.5);
-                        vectorY = -vectorY;
-                    }
+                    if(fireBall) {
+                        fireBall = false;
+                        for (int di = -1; di <= 1; di++) {
+                            for (int dj = -1; dj <= 1; dj++) {
+                                int ni = i + di;
+                                int nj = j + dj;
+                                if (ni >= 0 && ni < 8 && nj >= 0 && nj < 12) {
+                                    bricks[ni][nj].setHitPoints(0);
+                                }
+                            }
+                        }
 
-
+                    }
+                    break;
                 }
             }
+    }
+
+    public Image getImg(int index)
+    {
+        if(fireBall) return ballImg[2];
+        return ballImg[index];
+    }
+
+    public int getLives() {
+        return lives;
     }
 
     public boolean isOnPaddle() {
@@ -117,5 +131,29 @@ public class Ball extends GameObject {
 
     public void setOnPaddle(boolean onPaddle) {
         this.onPaddle = onPaddle;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public double getVectorX() {
+        return vectorX;
+    }
+
+    public double getVectorY() {
+        return vectorY;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public boolean isFireBall() {
+        return fireBall;
+    }
+
+    public void setFireBall(boolean fireBall) {
+        this.fireBall = fireBall;
     }
 }

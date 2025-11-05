@@ -56,6 +56,7 @@ public class LoginController {
                 Scene menuScene = new Scene(loader.load(), 1280, 720);
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.setScene(menuScene);
+                stage.centerOnScreen();
                 stage.show();
             } catch (Exception e) {
                 e.printStackTrace();
