@@ -1,105 +1,283 @@
 package GameManager;
 
-import Entity.Ball;
-import Entity.Brick;
-import Entity.Paddle;
+import Entity.*;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 public class GameController {
-    private Canvas canvas = new Canvas(1165,720);
+    private Canvas canvas = new Canvas(1280,720);
     private GraphicsContext gc = canvas.getGraphicsContext2D();
     private Brick[][] bricks = new Brick[8][12];
+    private int[][] bricktypes;
     private Ball ball = new Ball(670, 680, 20,20);
-    private Paddle paddle = new Paddle(640, 700, 80,20);
-    private static final Image[] brickImg = {
-            new Image(Brick.class.getResource("/res/brick0.png").toExternalForm()),
-            new Image(Brick.class.getResource("/res/brick1.png").toExternalForm()),
-            new Image(Brick.class.getResource("/res/brick2.png").toExternalForm())
-    };
+    private Paddle paddle = new Paddle(640, 700, 120,20);
+    private Queue<PowerUp> powerUp = new LinkedList<>();
+    private Queue<PowerUp> powerUpDelete = new LinkedList<>();
+    private int powerUpLeft = 25;
+    private Queue<GameObject> bullet = new LinkedList<>();
+    private Queue<GameObject> bulletDelete = new LinkedList<>();
+    private int bulletLeft = 0;
+    private int bulletCooldown = 0;
+    private static final Image bulletImg = new Image(Brick.class.getResource("/res/ball1.png").toExternalForm());
+    private VariableValue variableValue = new VariableValue();
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
+    private int level = 0;
+    private final Object lock = new Object();
+
     @FXML
     AnchorPane gameLayout;
 
     public void initialize() {
-        for(int i = 0; i < 8; i++)
-        for(int j = 0; j < 11; j++)
-            bricks[i][j] = new Brick(5+ j * 105, i * 45, 102, 42,3);
-
         gameLayout.getChildren().add(canvas);
+        AnimationTimer uiLoop = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                draw();
+            }
+        };
+        uiLoop.start();
 
-
-        Thread loopThread = new Thread(() -> {
+        Thread LogicLoop = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                if(!ball.isOnPaddle()) {
-                    ball.update(canvas.getWidth(), canvas.getHeight(), paddle, bricks);
-                } else ball.reset(paddle);
-                draw(gc);
+
+                paddle.move();
+                renderBall();
+                renderPowerUp();
+                renderBullet();
+                endgame();
                 try {
-                    Thread.sleep(30);
+                    Thread.sleep(25);
                 } catch (InterruptedException e) {
                     break;
                 }
             }
         });
-        loopThread.start();
-        //loopThread.interrupt();
+        LogicLoop.start();
 
         gameLayoutEvents();
     }
 
-    private void draw(GraphicsContext gc) {
+    public void startGame() {
+
+        bricktypes = variableValue.brickMap(level);
+        for(int i = 0; i < 8; i++)
+        for(int j = 0; j < 12; j++) {
+            bricks[i][j] = new Brick(10+ j * 105, i * 45+60, 102, 42,bricktypes[i][j]);
+            if(bricktypes[i][j] == 0)bricks[i][j].setHitPoints(0);
+        }
+    }
+
+    private void gameLayoutEvents() {
+        canvas.setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case A:
+                    paddle.setLeft(true);
+                    paddle.setRight(false);
+                    break;
+                case D:
+                    paddle.setRight(true);
+                    paddle.setLeft(false);
+                    break;
+                case SPACE:
+                    ball.setOnPaddle(false);
+                    break;
+            }
+        });
+        canvas.setOnKeyReleased(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case A:
+                    paddle.setLeft(false);
+                    paddle.setRight(false);
+
+                    break;
+                case D:
+                    paddle.setRight(false);
+                    paddle.setLeft(false);
+                    break;
+            }
+        });
+        canvas.setFocusTraversable(true);
+        canvas.requestFocus();
+
+        gameLayout.setOnMouseMoved( mouseMove -> {
+
+        });
+
+        gameLayout.setOnMouseClicked(mouseEvent -> {
+
+        });
+    }
+
+    private void renderBall() {
+        if(!ball.isOnPaddle()) {
+            ball.update(canvas.getWidth(), canvas.getHeight(), paddle, bricks);
+            if(ball.newDestroyBrick && powerUpLeft > 0) {
+                if(powerUpLeft>=Math.random()*brickLeft()) {
+                    powerUpLeft--;
+                    //powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) 5));
+                    powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) (Math.random()*6)));
+                }
+            }
+            ball.newDestroyBrick = false;
+        } else {
+            ball.reset(paddle);
+        }
+    }
+
+    private void renderPowerUp() {
+        for(PowerUp tmpPowerUp:powerUp) {
+            tmpPowerUp.move(0,3);
+            if(tmpPowerUp.checkCollision(paddle)) {
+                setPowerUp(tmpPowerUp.getType());
+                powerUpDelete.add(tmpPowerUp);
+            }else
+            if(tmpPowerUp.getY()>paddle.getY()) {
+                powerUpDelete.add(tmpPowerUp);
+            }
+        }
+        for(PowerUp tmpPowerUpDelete : powerUpDelete) {
+            powerUp.remove(tmpPowerUpDelete);
+        }
+        powerUpDelete.clear();
+
+    }
+
+
+    private  void renderBullet() {
+        if(bulletLeft > 0 && bulletCooldown >= 300) {
+            bulletCooldown = 0;
+            bulletLeft--;
+            System.out.println(bulletLeft);
+            bullet.add(new GameObject(paddle.getX() + paddle.getWidth()/2, paddle.getY() - 10, 10,10));
+        } else bulletCooldown += 25;
+        boolean tempBreak = false;
+        for(GameObject tmpBullet : bullet) {
+            tmpBullet.move(0,-12);
+            for(int i = 0; i < 8; i++) {
+                for (int j = 0; j < 12; j++) {
+                    Brick tempBrick = bricks[i][j];
+                    if(!tempBrick.isDestroyed() && tempBrick.checkCollision(tmpBullet)) {
+                        tempBrick.hit();
+                        bulletDelete.add(tmpBullet);
+                        tempBreak = true;
+                        break;
+                    }
+                }
+                if(tempBreak)break;
+            }
+            if(tmpBullet.getY() < 0 && !tempBreak)
+                bulletDelete.add(tmpBullet);
+        }
+        for(GameObject tmpBulletDelete : bulletDelete)
+            bullet.remove(tmpBulletDelete);
+        bulletDelete.clear();
+    }
+
+    private void endgame() {
+        if(brickLeft()==0) {
+            System.out.println();
+        }
+    }
+
+    private void draw() {
         Brick tempBrick;
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for(int i = 0; i < 8; i++)
-            for(int j = 0; j < 11; j++) {
+        for(int i = 0; i < ball.getLives(); i++)
+            gc.drawImage(ballImg, 1280 - (ball.getWidth() + 5) * i, 10,
+                    ball.getWidth(), ball.getHeight());
+        for(int i = 0; i < 8; i++) {
+            for (int j = 0; j < 12; j++) {
                 tempBrick = bricks[i][j];
                 gc.setGlobalAlpha(tempBrick.getOpacity());
-                if(!tempBrick.isDestroyed())
-                gc.drawImage(brickImg[(int) tempBrick.getType()-1], tempBrick.getX()  , tempBrick.getY(),
-                        tempBrick.getWidth() , tempBrick.getHeight());
+                if (!tempBrick.isDestroyed()) {
+                    gc.drawImage(tempBrick.getImage(), tempBrick.getX(), tempBrick.getY(),
+                            tempBrick.getWidth(), tempBrick.getHeight());
+                }
             }
+        }
+        for(PowerUp tmpPowerUp:powerUp) {
+            gc.drawImage(tmpPowerUp.getImage(), tmpPowerUp.getX(), tmpPowerUp.getY(),
+                    tmpPowerUp.getWidth(), tmpPowerUp.getHeight());
+        }
+        for(GameObject tmpBullet:bullet) {
+            System.out.println(tmpBullet.getX()+ " "+ tmpBullet.getY());
+            gc.drawImage(bulletImg, tmpBullet.getX(), tmpBullet.getY(),
+                    tmpBullet.getWidth(), tmpBullet.getHeight());
+        }
         gc.setGlobalAlpha(1);
-        gc.drawImage(ballImg, ball.getX(), ball.getY(),
+        gc.drawImage(ball.getImg(0), ball.getX(), ball.getY(),
                 ball.getWidth(), ball.getHeight());
+
         gc.drawImage(paddleImg, paddle.getX() , paddle.getY(),
                 paddle.getWidth(), paddle.getHeight());
     }
 
-    private void gameLayoutEvents() {
 
-        gameLayout.setOnMouseMoved( mouseMove -> {
-            paddle.setX(Math.min(mouseMove.getX(),canvas.getWidth()-paddle.getWidth()));
-        });
 
-        gameLayout.setOnMouseClicked(mouseEvent -> {
-           // System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
-            ball.setOnPaddle(false);
-        });
+    /** types
+     *      powerUp_BigPaddle = 0;
+     *      powerUp_SmallPaddle = 1;
+     *      powerUp_Fast = 2;
+     *      powerUp_Slow = 3;
+     *      powerUp_Shoot = 4;
+     *      powerUp_FireBall = 5;
+     *      powerUp_TripleBall = 6;
+     */
+    public void setPowerUp(int type) {
+        switch (type) {
+            case 0:
+                paddle.setWidth(paddle.getWidth()*1.5);
+                break;
+            case 1:
+                paddle.setWidth(paddle.getWidth()*0.75);
+                break;
+            case 2:
+                ball.setSpeed(ball.getSpeed() * 1.2);
+                break;
+            case 3:
+                ball.setSpeed(ball.getSpeed() * 0.8);
+                break;
+            case 4:
+                bulletLeft = 30;
+                break;
+            case 5:
+                ball.setFireBall(true);
+                break;
+            case 6:
+
+                break;
+        }
     }
 
-
-    void setVisibleImageView(ImageView imageView, double x, double y) {
-        double left = imageView.getLayoutX();
-        double right = imageView.getLayoutX() + imageView.getFitWidth();
-        double up = imageView.getLayoutY();
-        double down = imageView.getLayoutY() + imageView.getFitHeight();
-        imageView.setVisible(false);
-        if(x >= left && x <= right)
-            if(y >= up & y <= down) imageView.setVisible(true);
+    public int brickLeft() {
+        int temp = 0;
+        for(int i = 0; i < 8; i++)
+            for(int j = 0; j < 12; j++)
+                if(!bricks[i][j].isDestroyed())temp++;
+        return temp;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
 }

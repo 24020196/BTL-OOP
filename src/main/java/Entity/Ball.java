@@ -1,5 +1,7 @@
 package Entity;
 
+import javafx.scene.image.Image;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,28 +10,36 @@ public class Ball extends GameObject {
     private double angle;
     private double vectorX;
     private double vectorY;
+    private boolean fireBall = false;
     private int lives;
+    private static final Image[] ballImg = {
+            new Image(PowerUp.class.getResource("/res/ball0.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/ball1.png").toExternalForm()),
+            new Image(PowerUp.class.getResource("/res/ball2.png").toExternalForm())
+    };
     private boolean onPaddle = true;
+    public boolean newDestroyBrick = false;
 
     public Ball(double x, double y, double width, double height) {
         super(x, y, width, height);
-        this.speed = 10;
-        this.angle = Math.toRadians(80);
+        this.speed = 8;
+        this.angle = Math.toRadians(90);
         this.vectorX = Math.cos(angle);
         this.vectorY = -Math.sin(angle);
         this.lives = 3;
     }
 
     public void update(double sceneWidth, double sceneHeight, Paddle paddle, Brick[][] bricks) {
-        move(speed * vectorX, speed * vectorY);
-        bounceOff(paddle, bricks, sceneWidth, sceneHeight);
-
-        if (getY() > sceneHeight) {
-            lives--;
-            if (lives <= 0) {
-                System.out.println("Game Over!");
-            } else {
-                reset(paddle);
+        if(lives>0) {
+            move(speed * vectorX, speed * vectorY);
+            bounceOff(paddle, bricks, sceneWidth, sceneHeight);
+            if (getY() > paddle.getY()) {
+                lives--;
+                if (lives <= 0) {
+                    System.out.println("Game Over!");
+                } else {
+                    reset(paddle);
+                }
             }
         }
     }
@@ -37,46 +47,82 @@ public class Ball extends GameObject {
     public void reset(Paddle paddle) {
         setX(paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0);
         setY(paddle.getY() - getHeight() );
-        this.angle = Math.toRadians(80);
+        this.angle = Math.toRadians(90);
         this.vectorX = Math.cos(this.angle);
         this.vectorY = -Math.sin(this.angle);
+        this.onPaddle = true;
+        this.fireBall = false;
     }
-
     public void bounceOff(Paddle paddle, Brick[][] bricks, double sceneWidth, double sceneHeight) {
         // chạm khung trái phải
         if (getX() <= 0 || getX() + getWidth() >= sceneWidth) {
+            move(-speed * vectorX, -speed * vectorY);
             vectorX *= -0.98;
         }
         if (getY() <= 0) {
+            move(-speed * vectorX, -speed * vectorY);
             vectorY*=-0.98;
         }
 
         if (checkCollision(paddle)) {
-            vectorY*=-0.98;
+            if (checkCollision(paddle)) {
+                double ballCenter = getX() + getWidth() / 2.0;
+                double paddleCenter = paddle.getX() + paddle.getWidth() / 2.0;
+                double distance = (ballCenter - paddleCenter) / (paddle.getWidth() / 2.0); // -1..1
+                double bounceAngle = Math.toRadians(60 * distance); // góc lệch tối đa ±60°
+                move(-speed * vectorX, -speed * vectorY);
+                vectorX = Math.sin(bounceAngle);
+                vectorY = -Math.cos(bounceAngle);
+                setY(paddle.getY() - getHeight() - 1);
+            }
+            setY(paddle.getY() - getHeight()-1);
         }
 
         for(int i = 0; i < 8; i++)
-            for(int j = 0; j < 11; j++) {
-            Brick brick = bricks[i][j];
-            if (!brick.isDestroyed() && checkCollision(brick)) {
-                brick.hit();
-                double overlapLeft = getX() + getWidth() - brick.getX();
-                double overlapRight = brick.getX() + brick.getWidth() - getX();
-                double overlapTop = getY() + getHeight() - brick.getY();
-                double overlapBottom = brick.getY() + brick.getHeight() - getY();
+            for(int j = 0; j < 12; j++) {
+                Brick brick = bricks[i][j];
+                if (!brick.isDestroyed() && checkCollision(brick)) {
+                    brick.hit();
+                    newDestroyBrick = brick.isDestroyed();
+                    move(-speed * vectorX, -speed * vectorY);
+                    double overlapLeft = getX() + getWidth() - brick.getX();
+                    double overlapRight = brick.getX() + brick.getWidth() - getX();
+                    double overlapTop = getY() + getHeight() - brick.getY();
+                    double overlapBottom = brick.getY() + brick.getHeight() - getY();
 
-                double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
-                        Math.min(overlapTop, overlapBottom));
+                    double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
+                            Math.min(overlapTop, overlapBottom));
+                    if (minOverlap == overlapLeft || minOverlap == overlapRight) {
+                        vectorX *= -0.98;
+                    } else {
+                        vectorY *= -0.98;
+                    }
+                    if(fireBall) {
+                        fireBall = false;
+                        for (int di = -1; di <= 1; di++) {
+                            for (int dj = -1; dj <= 1; dj++) {
+                                int ni = i + di;
+                                int nj = j + dj;
+                                if (ni >= 0 && ni < 8 && nj >= 0 && nj < 12) {
+                                    bricks[ni][nj].setHitPoints(0);
+                                }
+                            }
+                        }
 
-                if (minOverlap == overlapLeft || minOverlap == overlapRight) {
-                    vectorX *= -0.98;
-                } else {
-                    vectorY *= -0.98;
+                    }
+                    break;
                 }
-                break;
-
             }
-        }
+    }
+
+    public Image getImg(int index)
+    {
+        if(fireBall) return ballImg[2];
+        return ballImg[index];
+    }
+
+    public int getLives() {
+        return lives;
     }
 
     public boolean isOnPaddle() {
@@ -87,35 +133,27 @@ public class Ball extends GameObject {
         this.onPaddle = onPaddle;
     }
 
-    public static void main(String[] args) {
-        double sceneWidth = 400;
-        double sceneHeight = 300;
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 
-        Paddle paddle = new Paddle(350, 550, 100, 20);
-        List<Brick> bricks = new ArrayList<>();
-        bricks.add(new Brick(200, 100, 60, 20, 2));
-        bricks.add(new Brick(300, 100, 60, 20, 1));
+    public double getVectorX() {
+        return vectorX;
+    }
 
-        Ball ball = new Ball(50, 50, 20, 20);
+    public double getVectorY() {
+        return vectorY;
+    }
 
-        for (int i = 0; i < 40000; i+=10) {
-            if (ball.lives >=0) {
-                //ball.update(sceneWidth, sceneHeight, paddle, bricks);
-                System.out.printf("Frame %d: Ball(%.1f, %.1f) Dir(%.2f, %.2f) Lives: %d%n",
-                        i, ball.getX(), ball.getY(), ball.vectorX, ball.vectorY, ball.lives);
+    public double getSpeed() {
+        return speed;
+    }
 
+    public boolean isFireBall() {
+        return fireBall;
+    }
 
-                for (int j = 0; j < bricks.size(); j++) {
-                    Brick b = bricks.get(j);
-                    System.out.printf("   Brick %d: %s (HP=%d)\n", j, b.isDestroyed() ? "DESTROYED" : "ALIVE", b.getHp());
-                }
-
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public void setFireBall(boolean fireBall) {
+        this.fireBall = fireBall;
     }
 }
