@@ -1,5 +1,6 @@
 package GameManager;
 
+import Entity.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,10 +14,9 @@ import javafx.stage.Stage;
 
 
 public class LevelMapController {
-    @FXML
-    AnchorPane levelLayout;
-    @FXML
-    ImageView levelMapBackground;
+
+    @FXML AnchorPane levelLayout;
+    @FXML ImageView levelMapBackground;
     @FXML ImageView level1;
     @FXML ImageView level2;
     @FXML ImageView level3;
@@ -27,18 +27,24 @@ public class LevelMapController {
     @FXML ImageView level8;
     @FXML ImageView level9;
 
+    public User user;
+
     public void initialize() {
         setsize();
         levelLayoutEvents();
     }
 
+    public void drawStar() {
+        System.out.println(user.getLevelPoint());
+
+    }
+
     private void levelLayoutEvents() {
         levelLayout.setOnMouseClicked(mouseEvent -> {
-            System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
+            //System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
         });
 
         levelLayout.setOnMouseMoved( mouseMove -> {
-
 
         });
 
@@ -68,15 +74,7 @@ public class LevelMapController {
     void setsize() {
 
         update(levelMapBackground,0,0,1280,720);
-        update(level1,50,100,180,125);
-        update(level2,50,100,180,125);
-        update(level3,50,100,180,125);
-        update(level4,50,100,180,125);
-        update(level5,50,100,180,125);
-        update(level6,50,100,180,125);
-        update(level7,50,100,180,125);
-        update(level8,50,100,180,125);
-        update(level9,50,100,180,125);
+
     }
 
     void update(ImageView imageView, double x, double y, double width, double height) {

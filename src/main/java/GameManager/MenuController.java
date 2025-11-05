@@ -2,6 +2,8 @@ package GameManager;
 
 import Entity.Brick;
 import Entity.GameObject;
+import Entity.User;
+import GameDatabase.ScoreDataAccessObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,25 +22,26 @@ import static javafx.application.Application.launch;
 
 
 public class MenuController {
-    @FXML
-    AnchorPane mainLayout;
-    @FXML
-    AnchorPane menuLayout;
-    @FXML
-    ImageView menuBackground;
-    @FXML
-    ImageView btnPlayGame;
-    @FXML
-    ImageView btnHighScores;
-    @FXML
-    ImageView btnSetting;
-    @FXML
-    ImageView btnExit;
+    @FXML AnchorPane mainLayout;
+    @FXML AnchorPane menuLayout;
+    @FXML ImageView menuBackground;
+    @FXML ImageView btnPlayGame;
+    @FXML ImageView btnHighScores;
+    @FXML ImageView btnSetting;
+    @FXML ImageView btnExit;
+
+    public String userName;
+    public User user = new User(userName);
+    private ScoreDataAccessObject data = new ScoreDataAccessObject();
 
     public void initialize() {
         setsize();
-
         mainLayoutEvents();
+    }
+
+    public void connectDatabase() {
+        data.getPoint(userName, user);
+        System.out.println(user.getLevels());
     }
 
     private void mainLayoutEvents() {
@@ -61,6 +64,9 @@ public class MenuController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
                 Parent root = loader.load();
+                LevelMapController levelMapController = loader.getController();
+                levelMapController.user = user;
+                levelMapController.drawStar();
                 Stage stage = (Stage) mainLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.show();

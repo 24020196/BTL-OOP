@@ -1,6 +1,7 @@
 package GameManager;
 
 import Entity.*;
+import GameDatabase.ScoreDataAccessObject;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.geometry.BoundingBox;
@@ -62,7 +63,7 @@ public class GameController {
                 renderBall();
                 renderPowerUp();
                 renderBullet();
-                endgame();
+                //endgame();
                 try {
                     Thread.sleep(25);
                 } catch (InterruptedException e) {
@@ -122,7 +123,8 @@ public class GameController {
         });
 
         gameLayout.setOnMouseClicked(mouseEvent -> {
-
+                ScoreDataAccessObject data = new ScoreDataAccessObject();
+                //data.getPoint(1);
         });
     }
 
@@ -160,7 +162,6 @@ public class GameController {
 
     }
 
-
     private  void renderBullet() {
         if(bulletLeft > 0 && bulletCooldown >= 300) {
             bulletCooldown = 0;
@@ -193,7 +194,7 @@ public class GameController {
 
     private void endgame() {
         if(brickLeft()==0) {
-            System.out.println();
+            System.out.println("Game Over");
         }
     }
 
