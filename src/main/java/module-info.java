@@ -8,7 +8,7 @@ module org {
     requires com.almasb.fxgl.all;
     requires transitive javafx.graphics;
     requires java.sql;
-
+    requires transitive javafx.base;
     opens Entity to javafx.fxml;
     exports Entity;
     exports GameManager;

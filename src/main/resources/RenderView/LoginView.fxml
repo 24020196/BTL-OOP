@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.layout.HBox?>
+<StackPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GameManager.LoginController">
+
+    <ImageView fx:id="loginbackground">
+        <image>
+            <Image url="@../res/loginBackground.png" /> <!-- đổi đúng đường dẫn ảnh của bạn -->
+        </image>
+    </ImageView>
+
+    <StackPane alignment="CENTER">
+
+        <VBox alignment="CENTER" maxWidth="300.0" prefHeight="450.0" prefWidth="402.0" spacing="12" style="-fx-background-color:rgba(255,255,255,0); -fx-padding: 25; -fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: #888;">
+
+            <Label style="-fx-font-size: 20; -fx-font-weight: bold;" text="Đăng nhập" textFill="#9c9a9a" />
+
+            <TextField fx:id="usernameField" maxWidth="-Infinity" prefHeight="26.0" prefWidth="180.0" promptText="Username" />
+            <PasswordField fx:id="passwordField" maxWidth="-Infinity" prefHeight="26.0" prefWidth="180.0" promptText="Password" />
+
+            <CheckBox fx:id="rememberCheck" text="Ghi nhớ đăng nhập" textFill="#a98b8b" />
+
+            <Button maxWidth="-Infinity" onAction="#onLogin" prefHeight="26.0" prefWidth="115.0" text="Đăng nhập" />
+
+            <HBox alignment="CENTER" spacing="4">
+                <Label text="Bạn chưa có tài khoản?" textFill="#a98b8b" />
+
+                <Hyperlink text="Đăng ký" onAction="#goRegister"
+                           style="-fx-text-fill: #4a90e2; -fx-font-size: 13; -fx-underline: true;"/>
+            </HBox>
+            <Label fx:id="messageLabel" style="-fx-font-size: 12" textFill="red" />
+
+        </VBox>
+    </StackPane>
+
+</StackPane>

@@ -1,10 +1,15 @@
 package GameManager;
 
 import Entity.*;
+import GameDatabase.ScoreDataAccessObject;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
@@ -15,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,14 +46,17 @@ public class GameController {
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
     private int level = 0;
+
+    private Thread LogicLoop;
+    private AnimationTimer uiLoop;
     private final Object lock = new Object();
 
-    @FXML
-    AnchorPane gameLayout;
+
+    @FXML AnchorPane gameLayout;
 
     public void initialize() {
         gameLayout.getChildren().add(canvas);
-        AnimationTimer uiLoop = new AnimationTimer() {
+        uiLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 draw();
@@ -55,14 +64,13 @@ public class GameController {
         };
         uiLoop.start();
 
-        Thread LogicLoop = new Thread(() -> {
+        LogicLoop = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
 
                 paddle.move();
                 renderBall();
                 renderPowerUp();
                 renderBullet();
-                endgame();
                 try {
                     Thread.sleep(25);
                 } catch (InterruptedException e) {
@@ -122,7 +130,8 @@ public class GameController {
         });
 
         gameLayout.setOnMouseClicked(mouseEvent -> {
-
+                ScoreDataAccessObject data = new ScoreDataAccessObject();
+                //data.getPoint(1);
         });
     }
 
@@ -136,6 +145,7 @@ public class GameController {
                     powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) (Math.random()*6)));
                 }
             }
+            endgame();
             ball.newDestroyBrick = false;
         } else {
             ball.reset(paddle);
@@ -159,7 +169,6 @@ public class GameController {
         powerUpDelete.clear();
 
     }
-
 
     private  void renderBullet() {
         if(bulletLeft > 0 && bulletCooldown >= 300) {
@@ -191,10 +200,31 @@ public class GameController {
         bulletDelete.clear();
     }
 
-    private void endgame() {
-        if(brickLeft()==0) {
-            System.out.println();
+    public void endgame() {
+        if(brickLeft() == 0 || ball.getLives() == 0) {
+            System.out.println("Game Over");
+            uiLoop.stop();
+            LogicLoop.interrupt();
+            if(ball.getLives() > User.getUser().getLevelPoint().charAt(level - 1)) {
+                User.getUser().setLevelPoint(level - 1, ball.getLives());
+            }
+            Platform.runLater(() -> {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/endGame.fxml"));
+                    Parent root = loader.load();
+                    EndGameController endGameController = loader.getController();
+                    if (ball.getLives() > 0) endGameController.winGame();
+                    Stage stage = (Stage) gameLayout.getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.centerOnScreen();
+                    stage.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
+
+
     }
 
     private void draw() {
@@ -220,7 +250,7 @@ public class GameController {
                     tmpPowerUp.getWidth(), tmpPowerUp.getHeight());
         }
         for(GameObject tmpBullet:bullet) {
-            System.out.println(tmpBullet.getX()+ " "+ tmpBullet.getY());
+
             gc.drawImage(bulletImg, tmpBullet.getX(), tmpBullet.getY(),
                     tmpBullet.getWidth(), tmpBullet.getHeight());
         }

@@ -2,6 +2,8 @@ package GameManager;
 
 import Entity.Brick;
 import Entity.GameObject;
+import Entity.User;
+import GameDatabase.ScoreDataAccessObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,35 +17,36 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import static javafx.application.Application.launch;
 
 
 public class MenuController {
-    @FXML
-    AnchorPane mainLayout;
-    @FXML
-    AnchorPane menuLayout;
-    @FXML
-    ImageView menuBackground;
-    @FXML
-    ImageView btnPlayGame;
-    @FXML
-    ImageView btnHighScores;
-    @FXML
-    ImageView btnSetting;
-    @FXML
-    ImageView btnExit;
+    @FXML AnchorPane mainLayout;
+    @FXML AnchorPane menuLayout;
+    @FXML ImageView menuBackground;
+    @FXML ImageView btnPlayGame;
+    @FXML ImageView btnHighScores;
+    @FXML ImageView btnSetting;
+    @FXML ImageView btnExit;
+
+    private ScoreDataAccessObject data = new ScoreDataAccessObject();
 
     public void initialize() {
         setsize();
-
         mainLayoutEvents();
+    }
+
+    public void connectDatabase() {
+        data.getPoint(User.getUser().getUsername(),User.getUser());
+        User.getUser().highScores.clear();
+        data.getHighScorces();
     }
 
     private void mainLayoutEvents() {
         mainLayout.setOnMouseClicked(mouseEvent -> {
-            System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
+            //System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
         });
 
 
@@ -60,6 +63,22 @@ public class MenuController {
             //menuLayout.setVisible(false);
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
+                Parent root = loader.load();
+                LevelMapController levelMapController = loader.getController();
+                levelMapController.drawStar();
+                Stage stage = (Stage) mainLayout.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        btnHighScores.setOnMouseClicked(event -> {
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/highScore.fxml"));
                 Parent root = loader.load();
                 Stage stage = (Stage) mainLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));

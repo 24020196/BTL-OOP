@@ -17,58 +17,58 @@
         </image>
     </ImageView>
 
-    <ImageView fx:id="level1" fitHeight="95.0" fitWidth="110.0" layoutX="22.0" layoutY="171.0" preserveRatio="true">
+    <ImageView fx:id="level1" fitHeight="146.0" fitWidth="214.0" layoutX="8.0" layoutY="145.0" preserveRatio="true">
         <image>
             <Image url="@../res/planet0.png" />
         </image>
     </ImageView>
 
-    <ImageView fx:id="level2" fitHeight="75.0" fitWidth="95.0" layoutX="484.0" layoutY="88.0" preserveRatio="true">
+    <ImageView fx:id="level2" fitHeight="104.0" fitWidth="106.0" layoutX="536.0" layoutY="66.0" preserveRatio="true">
         <image>
             <Image url="@../res/planet1.png" />
         </image>
     </ImageView>
 
-    <ImageView fx:id="level3" fitHeight="75.0" fitWidth="95.0" layoutX="925.0" layoutY="132.0" preserveRatio="true">
+    <ImageView fx:id="level3" fitHeight="104.0" fitWidth="158.0" layoutX="956.0" layoutY="131.0" preserveRatio="true">
         <image>
             <Image url="@../res/planet2.png" />
         </image>
     </ImageView>
 
-    <ImageView fx:id="level4" fitHeight="85.0" fitWidth="75.0" layoutX="1181.0" layoutY="379.0" preserveRatio="true">
+    <ImageView fx:id="level4" fitHeight="140.0" fitWidth="117.0" layoutX="1148.0" layoutY="355.0" preserveRatio="true">
         <image>
             <Image url="@../res/planet3.png" />
         </image>
     </ImageView>
 
-    <ImageView fx:id="level5" fitHeight="75.0" fitWidth="95.0" layoutX="900.0" layoutY="604.0" preserveRatio="true">
-    <image>
-        <Image url="@../res/planet4.png" />
-    </image>
+    <ImageView fx:id="level5" fitHeight="104.0" fitWidth="106.0" layoutX="852.0" layoutY="570.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet4.png" />
+        </image>
     </ImageView>
 
-    <ImageView fx:id="level6" fitHeight="75.0" fitWidth="95.0" layoutX="477.0" layoutY="611.0" preserveRatio="true">
-    <image>
-        <Image url="@../res/planet5.png" />
-    </image>
+    <ImageView fx:id="level6" fitHeight="104.0" fitWidth="106.0" layoutX="464.0" layoutY="570.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet5.png" />
+        </image>
     </ImageView>
 
-    <ImageView fx:id="level7" fitHeight="75.0" fitWidth="95.0" layoutX="87.0" layoutY="438.0" preserveRatio="true">
-    <image>
-        <Image url="@../res/planet6.png" />
-    </image>
+    <ImageView fx:id="level7" fitHeight="104.0" fitWidth="106.0" layoutX="52.0" layoutY="422.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet6.png" />
+        </image>
     </ImageView>
 
-    <ImageView fx:id="level8" fitHeight="75.0" fitWidth="95.0" layoutX="502.0" layoutY="316.0" preserveRatio="true">
-    <image>
-        <Image url="@../res/planet7.png" />
-    </image>
+    <ImageView fx:id="level8" fitHeight="104.0" fitWidth="106.0" layoutX="516.0" layoutY="308.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet7.png" />
+        </image>
     </ImageView>
 
-    <ImageView fx:id="level9" fitHeight="75.0" fitWidth="95.0" layoutX="933.0" layoutY="384.0" preserveRatio="true">
-    <image>
-        <Image url="@../res/planet8.png" />
-    </image>
+    <ImageView fx:id="level9" fitHeight="104.0" fitWidth="106.0" layoutX="933.0" layoutY="370.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet8.png" />
+        </image>
     </ImageView>
 
 

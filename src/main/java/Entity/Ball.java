@@ -22,7 +22,7 @@ public class Ball extends GameObject {
 
     public Ball(double x, double y, double width, double height) {
         super(x, y, width, height);
-        this.speed = 8;
+        this.speed = 10;
         this.angle = Math.toRadians(90);
         this.vectorX = Math.cos(angle);
         this.vectorY = -Math.sin(angle);
@@ -36,7 +36,7 @@ public class Ball extends GameObject {
             if (getY() > paddle.getY()) {
                 lives--;
                 if (lives <= 0) {
-                    System.out.println("Game Over!");
+                    //System.out.println("Game Over!");
                 } else {
                     reset(paddle);
                 }
