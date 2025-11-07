@@ -10,6 +10,7 @@ import java.util.Stack;
 public class User {
     private String username;
     private int levels;
+    private int currentLevel = 0;
     private int Score;
     private String levelPoint;
     private static User user;
@@ -68,6 +69,19 @@ public class User {
         this.Score = sum;
     }
 
+    public void setScore() {
+        int sum = 0;
+
+        for (int i = 0; i < levelPoint.length(); i++) {
+            char c = levelPoint.charAt(i);
+
+            if (Character.isDigit(c)) {
+                sum += Character.getNumericValue(c);
+            }
+        }
+        this.Score = sum;
+    }
+
     public int getLevels() {
         return levels;
     }
@@ -84,5 +98,11 @@ public class User {
         this.levels = (index == -1) ? 1 : index;
     }
 
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
 
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
 }

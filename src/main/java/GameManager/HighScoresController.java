@@ -13,10 +13,6 @@ public class HighScoresController {
 
     }
 
-    public void winGame() {
 
-
-        scoreDataAccessObject.setPoint(User.getUser().getUsername(), User.getUser().getLevelPoint());
-    }
 
 }

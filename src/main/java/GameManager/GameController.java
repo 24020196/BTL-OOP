@@ -59,18 +59,22 @@ public class GameController {
         uiLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                draw();
+                synchronized(lock) {
+                    draw();
+
+                }
             }
         };
         uiLoop.start();
 
         LogicLoop = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-
-                paddle.move();
-                renderBall();
-                renderPowerUp();
-                renderBullet();
+                synchronized(lock) {
+                    paddle.move();
+                    renderBall();
+                    renderPowerUp();
+                    renderBullet();
+                }
                 try {
                     Thread.sleep(25);
                 } catch (InterruptedException e) {

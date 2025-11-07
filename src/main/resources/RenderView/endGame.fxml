@@ -12,6 +12,13 @@
             fx:controller="GameManager.EndGameController"
             prefWidth="1280"  prefHeight="720">
 
+    <ImageView fx:id="endGameBackground"
+               fitWidth="1280"  fitHeight="720">
+        <image>
+            <Image url="@../res/gameOver.png"/>
+        </image>
+    </ImageView>
+
 
 </AnchorPane>
 

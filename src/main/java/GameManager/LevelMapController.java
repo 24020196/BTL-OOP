@@ -110,6 +110,7 @@ public class LevelMapController {
                     GameController gameController = loader.getController();
                     gameController.setLevel(levelIndex);
                     gameController.startGame();
+                    User.getUser().setCurrentLevel(levelIndex);
                     Stage stage = (Stage) levelLayout.getScene().getWindow();
                     stage.setScene(new Scene(root));
                     stage.show();
