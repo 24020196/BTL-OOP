@@ -23,7 +23,7 @@ public class EndGameController {
     }
 
     public void winGame() {
-        endGameBackground.setImage(new Image(getClass().getResource("../res/youWin.png").toExternalForm()));
+        endGameBackground.setImage(new Image(getClass().getResource("/res/youWin.png").toExternalForm()));
         scoreDataAccessObject.setPoint(User.getUser().getUsername(), User.getUser().getLevelPoint());
     }
 

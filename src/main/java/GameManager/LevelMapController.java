@@ -104,7 +104,6 @@ public class LevelMapController {
             final int levelIndex = i + 1;
             levels[i].setOnMouseClicked(event -> {
                 try {
-
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/game.fxml"));
                     Parent root = loader.load();
                     GameController gameController = loader.getController();
