@@ -59,11 +59,11 @@ public class Ball extends GameObject {
         if (getX() <= 0 || getX() + getWidth() >= sceneWidth) {
             audio.playWallHit();
             move(-speed * vectorX, -speed * vectorY);
-            vectorX *= -0.98;
+            vectorX *= -1;
         }
         if (getY() <= 0) {
             move(-speed * vectorX, -speed * vectorY);
-            vectorY*=-0.98;
+            vectorY*=-1;
         }
 
         if (checkCollision(paddle)) {
@@ -102,9 +102,9 @@ public class Ball extends GameObject {
                     double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
                             Math.min(overlapTop, overlapBottom));
                     if (minOverlap == overlapLeft || minOverlap == overlapRight) {
-                        vectorX *= -0.98;
+                        vectorX *= -1;
                     } else {
-                        vectorY *= -0.98;
+                        vectorY *= -1;
                     }
                     if(fireBall) {
                         fireBall = false;

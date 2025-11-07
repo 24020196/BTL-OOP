@@ -2,13 +2,16 @@ package Entity;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 public class User {
     private String username;
     private int levels;
-    private int score;
+    private int currentLevel = 0;
+    private int Score;
     private String levelPoint;
     private static User user;
     public Queue<Pair<String, Integer>> highScores = new LinkedList<>();
@@ -63,7 +66,20 @@ public class User {
                 sum += Character.getNumericValue(c);
             }
         }
-        this.score = sum;
+        this.Score = sum;
+    }
+
+    public void setScore() {
+        int sum = 0;
+
+        for (int i = 0; i < levelPoint.length(); i++) {
+            char c = levelPoint.charAt(i);
+
+            if (Character.isDigit(c)) {
+                sum += Character.getNumericValue(c);
+            }
+        }
+        this.Score = sum;
     }
 
     public int getLevels() {
@@ -82,5 +98,11 @@ public class User {
         this.levels = (index == -1) ? 1 : index;
     }
 
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
 
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
 }

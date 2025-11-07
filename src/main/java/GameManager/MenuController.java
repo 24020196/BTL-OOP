@@ -2,6 +2,8 @@ package GameManager;
 
 import Entity.Brick;
 import Entity.GameObject;
+import Entity.User;
+import GameDatabase.ScoreDataAccessObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,10 +39,18 @@ public class MenuController {
     @FXML
     ImageView btnExit;
 
+    private ScoreDataAccessObject data = new ScoreDataAccessObject();
+
     public void initialize() {
         setsize();
         setting.setVisible(false);
         mainLayoutEvents();
+    }
+
+    public void connectDatabase() {
+        data.getPoint(User.getUser().getUsername(),User.getUser());
+        User.getUser().highScores.clear();
+        data.getHighScorces();
     }
 
     private void mainLayoutEvents() {
@@ -59,8 +69,27 @@ public class MenuController {
         });
 
         btnPlayGame.setOnMouseClicked(event -> {
+            //levelLayout.setVisible(true);
+            //menuLayout.setVisible(false);
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
+                Parent root = loader.load();
+                LevelMapController levelMapController = loader.getController();
+                levelMapController.drawStar();
+                Stage stage = (Stage) mainLayout.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+
+        btnHighScores.setOnMouseClicked(event -> {
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/highScore.fxml"));
                 Parent root = loader.load();
                 Stage stage = (Stage) mainLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));
@@ -71,16 +100,17 @@ public class MenuController {
             }
         });
 
+
+
         btnSetting.setOnMouseClicked(event -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/SettingView.fxml"));
-                Scene scene = new Scene(loader.load(), 300, 450); // size tùy bạn chỉnh
+                AnchorPane settingPane = loader.load();
+                setting.getChildren().setAll(settingPane);
 
-                Stage settingStage = new Stage();
-                settingStage.setTitle("Cài đặt âm thanh");
-                settingStage.setScene(scene);
-                settingStage.setResizable(false);
-                settingStage.show();
+                // Ẩn menu và hiện Setting
+                menuLayout.setVisible(false);
+                setting.setVisible(true);
 
             } catch (Exception e) {
                 e.printStackTrace();

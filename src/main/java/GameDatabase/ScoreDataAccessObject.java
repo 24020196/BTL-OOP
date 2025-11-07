@@ -1,16 +1,52 @@
 package GameDatabase;
 
+import Entity.User;
+import javafx.util.Pair;
+
 import java.sql.*;
 
 public class ScoreDataAccessObject {
-    public void saveScore(String username, int score, int level) {
-        String sql = "INSERT INTO scores (username, score, level) VALUES (?, ?, ?)";
+
+    public void getHighScorces() {
+        String sql = "SELECT high_scores,username FROM users ORDER BY high_scores DESC LIMIT 5";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                System.out.println("=== BẢNG ĐIỂM ===");
+                while (rs.next()) {
+                    User.getUser().highScores.add(new Pair<>(rs.getString("username")
+                            , rs.getInt("high_scores")));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(" Lỗi xem điểm: " + e.getMessage());
+        }
+    }
+
+    public void getPoint(String username, User user) {
+        String sql = "SELECT levelPoint FROM users WHERE username = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    user.setLevelPoint(rs.getString("LevelPoint"));
+                    //return rs.getString("LevelPoint");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(" Lỗi xem điểm: " + e.getMessage());
+        }
+    }
+
+    public void setPoint(String username, String levelPoint) {
+        String sql = "UPDATE users SET levelPoint = ? WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, username);
-            stmt.setInt(2, score);
-            stmt.setInt(3, level);
+            stmt.setString(1, levelPoint);
+            stmt.setString(2, username);
             stmt.executeUpdate();
 
             System.out.println(" Đã lưu điểm!");
@@ -20,22 +56,4 @@ public class ScoreDataAccessObject {
         }
     }
 
-    public void showScores() {
-        String sql = "SELECT * FROM scores ORDER BY score DESC";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            System.out.println("=== BẢNG ĐIỂM ===");
-            while (rs.next()) {
-                System.out.printf("%s - %d điểm - Màn %d%n",
-                        rs.getString("username"),
-                        rs.getInt("score"),
-                        rs.getInt("level"));
-            }
-
-        } catch (SQLException e) {
-            System.out.println(" Lỗi xem điểm: " + e.getMessage());
-        }
-    }
 }

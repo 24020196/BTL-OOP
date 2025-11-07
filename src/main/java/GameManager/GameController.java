@@ -3,8 +3,11 @@ package GameManager;
 import Entity.*;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
@@ -15,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,8 +44,11 @@ public class GameController {
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
     private int level = 0;
-    private final Object lock = new Object();
     private static final AudioController audio = AudioController.getInstance();
+
+    private Thread LogicLoop;
+    private AnimationTimer uiLoop;
+    private final Object lock = new Object();
 
     @FXML
     AnchorPane gameLayout;
@@ -50,22 +57,28 @@ public class GameController {
         AudioController.getInstance().playGameMusic();
 
         gameLayout.getChildren().add(canvas);
-        AnimationTimer uiLoop = new AnimationTimer() {
+        uiLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                draw();
+                synchronized(lock) {
+                    draw();
+
+
+                    endgame();
+                }
             }
         };
         uiLoop.start();
 
-        Thread LogicLoop = new Thread(() -> {
+         LogicLoop = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
 
-                paddle.move();
-                renderBall();
-                renderPowerUp();
-                renderBullet();
-//                endgame();
+                synchronized(lock) {
+                    paddle.move();
+                    renderPowerUp();
+                    renderBullet();
+                    renderBall();
+                }
                 try {
                     Thread.sleep(25);
                 } catch (InterruptedException e) {
@@ -134,6 +147,7 @@ public class GameController {
             ball.update(canvas.getWidth(), canvas.getHeight(), paddle, bricks);
             if(ball.newDestroyBrick && powerUpLeft > 0) {
                 if(powerUpLeft>=Math.random()*brickLeft()) {
+                    System.out.println(powerUpLeft);
                     powerUpLeft--;
                     //powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) 5));
                     powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) (Math.random()*6)));
@@ -196,15 +210,39 @@ public class GameController {
         bulletDelete.clear();
     }
 
-    private void endgame() {
-        if(brickLeft()==0) {
-            System.out.println();
+    public void endgame() {
+        if(brickLeft() == 0 || ball.getLives() == 0) {
+            System.out.println("Game Over");
+            uiLoop.stop();
+            LogicLoop.interrupt();
+            if(ball.getLives() > User.getUser().getLevelPoint().charAt(level - 1) - '0') {
+                User.getUser().setLevelPoint(level - 1, ball.getLives());
+            }
+            //Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/endGame.fxml"));
+                Parent root = loader.load();
+                EndGameController endGameController = loader.getController();
+                if (ball.getLives() > 0) {
+                    endGameController.winGame();
+                    User.getUser().setCurrentLevel(level + 1);
+                }
+                Stage stage = (Stage) gameLayout.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.centerOnScreen();
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //});
         }
+
+
     }
 
     private void draw() {
         Brick tempBrick;
-        //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for(int i = 0; i < ball.getLives(); i++)
@@ -220,6 +258,7 @@ public class GameController {
                 }
             }
         }
+        gc.setGlobalAlpha(1);
         for(PowerUp tmpPowerUp:powerUp) {
             gc.drawImage(tmpPowerUp.getImage(), tmpPowerUp.getX(), tmpPowerUp.getY(),
                     tmpPowerUp.getWidth(), tmpPowerUp.getHeight());
@@ -229,7 +268,6 @@ public class GameController {
             gc.drawImage(bulletImg, tmpBullet.getX(), tmpBullet.getY(),
                     tmpBullet.getWidth(), tmpBullet.getHeight());
         }
-        gc.setGlobalAlpha(1);
         gc.drawImage(ball.getImg(0), ball.getX(), ball.getY(),
                 ball.getWidth(), ball.getHeight());
 
@@ -237,9 +275,6 @@ public class GameController {
                 paddle.getWidth(), paddle.getHeight());
     }
 
-    public void audio() {
-
-    }
 
     /** types
      *      powerUp_BigPaddle = 0;
@@ -280,7 +315,7 @@ public class GameController {
         int temp = 0;
         for(int i = 0; i < 8; i++)
             for(int j = 0; j < 12; j++)
-                if(!bricks[i][j].isDestroyed())temp++;
+                if(bricks[i][j].getHp() > 0)temp++;
         return temp;
     }
 
