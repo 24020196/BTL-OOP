@@ -9,9 +9,11 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <AnchorPane fx:id="levelLayout" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="GameManager.LevelMapController">
+            fx:controller="GameManager.LevelMapController"
+            prefWidth="1280" prefHeight="720">
 
-    <ImageView fx:id="levelMapBackground">
+    <ImageView fx:id="levelMapBackground"
+                fitWidth="1280" fitHeight="720">
         <image>
             <Image url="@../res/levelBackground.png"/>
         </image>

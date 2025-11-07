@@ -39,7 +39,6 @@ public class LevelMapController {
         canvas.setMouseTransparent(true);
         levelLayout.getChildren().add(canvas);
         drawStarsAllLevels(gc);
-        setsize();
         levelLayoutEvents();
 
     }
@@ -56,9 +55,6 @@ public class LevelMapController {
                 {569, 432},   // Level 8
                 {986, 494}    // Level 9
         };
-
-        // Số sao đạt được của mỗi level (bạn có thể đọc từ file save)
-
         int[] starsAchieved = new int[]{0,0,0,0,0,0,0,0,0};
 
         for (int i = 0; i < User.getUser().getLevelPoint().length(); i++) {
@@ -121,27 +117,7 @@ public class LevelMapController {
         }
     }
 
-    void setsize() {
 
-        update(levelMapBackground,0,0,1280,720);
 
-    }
-
-    void update(ImageView imageView, double x, double y, double width, double height) {
-        imageView.setLayoutX(x);
-        imageView.setLayoutY(y);
-        imageView.setFitWidth(width);
-        imageView.setFitHeight(height);
-    }
-
-    void setVisibleImageView(ImageView imageView, double x, double y) {
-        double left = imageView.getLayoutX();
-        double right = imageView.getLayoutX() + imageView.getFitWidth();
-        double up = imageView.getLayoutY();
-        double down = imageView.getLayoutY() + imageView.getFitHeight();
-        imageView.setVisible(false);
-        if(x >= left && x <= right)
-            if(y >= up & y <= down) imageView.setVisible(true);
-    }
 
 }

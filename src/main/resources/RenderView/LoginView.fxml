@@ -16,7 +16,7 @@
 
     <ImageView fx:id="loginbackground">
         <image>
-            <Image url="@../res/loginBackground.png" /> <!-- đổi đúng đường dẫn ảnh của bạn -->
+            <Image url="@../res/loginBackground.png" />
         </image>
     </ImageView>
 

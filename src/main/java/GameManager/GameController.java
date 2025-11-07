@@ -46,7 +46,7 @@ public class GameController {
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
     private int level = 0;
-
+    private static final AudioController audio = AudioController.getInstance();
     private Thread LogicLoop;
     private AnimationTimer uiLoop;
     private final Object lock = new Object();
@@ -55,6 +55,7 @@ public class GameController {
     @FXML AnchorPane gameLayout;
 
     public void initialize() {
+        AudioController.getInstance().playGameMusic();
         gameLayout.getChildren().add(canvas);
         uiLoop = new AnimationTimer() {
             @Override
@@ -147,7 +148,6 @@ public class GameController {
             if(ball.newDestroyBrick && powerUpLeft > 0) {
                 if(powerUpLeft>=Math.random()*brickLeft()) {
                     powerUpLeft--;
-
                     System.out.println(powerUpLeft);
                     //powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) 5));
                     powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) (Math.random()*6)));
@@ -163,6 +163,7 @@ public class GameController {
         for(PowerUp tmpPowerUp:powerUp) {
             tmpPowerUp.move(0,3);
             if(tmpPowerUp.checkCollision(paddle)) {
+                audio.playPowerUp();
                 setPowerUp(tmpPowerUp.getType());
                 powerUpDelete.add(tmpPowerUp);
             }else
@@ -179,6 +180,7 @@ public class GameController {
 
     private  void renderBullet() {
         if(bulletLeft > 0 && bulletCooldown >= 300) {
+            audio.playPowerUpShoot();
             bulletCooldown = 0;
             bulletLeft--;
             System.out.println(bulletLeft);
@@ -313,7 +315,7 @@ public class GameController {
         int temp = 0;
         for(int i = 0; i < 8; i++)
             for(int j = 0; j < 12; j++)
-                if(!bricks[i][j].isDestroyed())temp++;
+                if(bricks[i][j].getHp() > 0)temp++;
         return temp;
     }
 

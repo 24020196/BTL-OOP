@@ -2,7 +2,6 @@ package Entity;
 
 public class Paddle extends GameObject {
     private final static double speed = 20;
-    private String currentPowerUp;
     private boolean left = false;
     private boolean right = false;
 

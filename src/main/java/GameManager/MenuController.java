@@ -89,6 +89,20 @@ public class MenuController {
             }
         });
 
+        btnSetting.setOnMouseClicked(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/SettingView.fxml"));
+                Scene scene = new Scene(loader.load(), 300, 450);
+                Stage settingStage = new Stage();
+                settingStage.setTitle("Cài đặt âm thanh");
+                settingStage.setScene(scene);
+                settingStage.setResizable(false);
+                settingStage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         btnExit.setOnMouseClicked(mouseEvent -> {
             Platform.exit();
         });
