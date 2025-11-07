@@ -54,7 +54,10 @@ public class Brick extends GameObject {
         if(type < 0) {
             if(indexImg == 0) return brickImg[3];
             indexImg++;
-            if(indexImg == 9*3)indexImg = 0;
+            if(indexImg == 9*3) {
+                indexImg = 0;
+                return brickImg[3];
+            }
             return brickImg[indexImg/3];
         }
         if(type > 0)

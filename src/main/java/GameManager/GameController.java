@@ -41,11 +41,14 @@ public class GameController {
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
     private int level = 0;
     private final Object lock = new Object();
+    private static final AudioController audio = AudioController.getInstance();
 
     @FXML
     AnchorPane gameLayout;
 
     public void initialize() {
+        AudioController.getInstance().playGameMusic();
+
         gameLayout.getChildren().add(canvas);
         AnimationTimer uiLoop = new AnimationTimer() {
             @Override
@@ -146,6 +149,7 @@ public class GameController {
         for(PowerUp tmpPowerUp:powerUp) {
             tmpPowerUp.move(0,3);
             if(tmpPowerUp.checkCollision(paddle)) {
+                audio.playPowerUp();
                 setPowerUp(tmpPowerUp.getType());
                 powerUpDelete.add(tmpPowerUp);
             }else
@@ -163,6 +167,7 @@ public class GameController {
 
     private  void renderBullet() {
         if(bulletLeft > 0 && bulletCooldown >= 300) {
+            audio.playPowerUpShoot();
             bulletCooldown = 0;
             bulletLeft--;
             System.out.println(bulletLeft);
@@ -232,7 +237,9 @@ public class GameController {
                 paddle.getWidth(), paddle.getHeight());
     }
 
+    public void audio() {
 
+    }
 
     /** types
      *      powerUp_BigPaddle = 0;

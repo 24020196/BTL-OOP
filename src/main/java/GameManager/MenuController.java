@@ -25,6 +25,8 @@ public class MenuController {
     @FXML
     AnchorPane menuLayout;
     @FXML
+    AnchorPane setting;
+    @FXML
     ImageView menuBackground;
     @FXML
     ImageView btnPlayGame;
@@ -37,13 +39,14 @@ public class MenuController {
 
     public void initialize() {
         setsize();
-
+        setting.setVisible(false);
         mainLayoutEvents();
     }
 
     private void mainLayoutEvents() {
         mainLayout.setOnMouseClicked(mouseEvent -> {
             System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
+
         });
 
 
@@ -56,8 +59,6 @@ public class MenuController {
         });
 
         btnPlayGame.setOnMouseClicked(event -> {
-            //levelLayout.setVisible(true);
-            //menuLayout.setVisible(false);
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
                 Parent root = loader.load();
@@ -69,6 +70,23 @@ public class MenuController {
                 e.printStackTrace();
             }
         });
+
+        btnSetting.setOnMouseClicked(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/SettingView.fxml"));
+                Scene scene = new Scene(loader.load(), 300, 450); // size tùy bạn chỉnh
+
+                Stage settingStage = new Stage();
+                settingStage.setTitle("Cài đặt âm thanh");
+                settingStage.setScene(scene);
+                settingStage.setResizable(false);
+                settingStage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
 
         btnExit.setOnMouseClicked(mouseEvent -> {
             Platform.exit();
@@ -101,5 +119,4 @@ public class MenuController {
         if(x >= left && x <= right)
             if(y >= up & y <= down) imageView.setVisible(true);
     }
-
 }

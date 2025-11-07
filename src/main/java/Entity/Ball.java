@@ -1,7 +1,7 @@
 package Entity;
 
 import javafx.scene.image.Image;
-
+import GameManager.AudioController;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +19,7 @@ public class Ball extends GameObject {
     };
     private boolean onPaddle = true;
     public boolean newDestroyBrick = false;
+    AudioController audio = AudioController.getInstance();
 
     public Ball(double x, double y, double width, double height) {
         super(x, y, width, height);
@@ -56,6 +57,7 @@ public class Ball extends GameObject {
     public void bounceOff(Paddle paddle, Brick[][] bricks, double sceneWidth, double sceneHeight) {
         // chạm khung trái phải
         if (getX() <= 0 || getX() + getWidth() >= sceneWidth) {
+            audio.playWallHit();
             move(-speed * vectorX, -speed * vectorY);
             vectorX *= -0.98;
         }
@@ -66,6 +68,7 @@ public class Ball extends GameObject {
 
         if (checkCollision(paddle)) {
             if (checkCollision(paddle)) {
+                audio.playPaddleHit();
                 double ballCenter = getX() + getWidth() / 2.0;
                 double paddleCenter = paddle.getX() + paddle.getWidth() / 2.0;
                 double distance = (ballCenter - paddleCenter) / (paddle.getWidth() / 2.0); // -1..1
@@ -83,7 +86,13 @@ public class Ball extends GameObject {
                 Brick brick = bricks[i][j];
                 if (!brick.isDestroyed() && checkCollision(brick)) {
                     brick.hit();
-                    newDestroyBrick = brick.isDestroyed();
+                    if (brick.isDestroyed()) {
+                        audio.playBrickBreak();
+                        newDestroyBrick = true;
+                    } else {
+                        audio.playBrickHit();
+                        newDestroyBrick = false;
+                    }
                     move(-speed * vectorX, -speed * vectorY);
                     double overlapLeft = getX() + getWidth() - brick.getX();
                     double overlapRight = brick.getX() + brick.getWidth() - getX();

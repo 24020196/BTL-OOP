@@ -1,10 +1,7 @@
 package GameManager;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -49,7 +46,7 @@ public class LevelMapController {
             levels[i].setOnMouseClicked(event -> {
                 try {
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/game.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/Game.fxml"));
                     Parent root = loader.load();
                     GameController gameController = loader.getController();
                     gameController.setLevel(levelIndex);

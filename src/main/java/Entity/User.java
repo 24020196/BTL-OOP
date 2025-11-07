@@ -1,21 +1,29 @@
 package Entity;
 
-import java.util.ArrayList;
+import javafx.util.Pair;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class User {
-    private int id;
+    private String username;
     private int levels;
-    private int high_scores;
+    private int score;
     private String levelPoint;
+    private static User user;
+    public Queue<Pair<String, Integer>> highScores = new LinkedList<>();
 
-    public User() {}
+    public static User getUser() {
+        if (user == null) {
+            user = new User();
+        }
+        return user;
+    }
 
-    public User(int id, String levelPoint) {
-        this.id = id;
-        this.levelPoint = levelPoint;
+    public User(){}
 
-        setHigh_scores(levelPoint);
-        setLevels();
+    public User(String username) {
+        this.username = username;
     }
 
     public String getLevelPoint() {
@@ -24,13 +32,28 @@ public class User {
 
     public void setLevelPoint(String levelPoint) {
         this.levelPoint = levelPoint;
+        setScore(levelPoint);
+        setLevels(levelPoint);
     }
 
-    public int getHigh_scores() {
-        return high_scores;
+
+    public void setLevelPoint(int index, int point) {
+        StringBuilder sb = new StringBuilder(levelPoint);
+        sb.setCharAt(index, (char) ('0' + point));
+        this.levelPoint = sb.toString();
+        setScore(levelPoint);
+        setLevels(levelPoint);
     }
 
-    public void setHigh_scores(String levelPoint) {
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setScore(String levelPoint) {
         int sum = 0;
 
         for (int i = 0; i < levelPoint.length(); i++) {
@@ -40,14 +63,14 @@ public class User {
                 sum += Character.getNumericValue(c);
             }
         }
-        this.high_scores = sum;
+        this.score = sum;
     }
 
     public int getLevels() {
         return levels;
     }
 
-    public void setLevels() {
+    public void setLevels(String levelPoint) {
         int index = -1;
 
         for (int i = 0; i < levelPoint.length(); i++) {
@@ -56,31 +79,8 @@ public class User {
             }
         }
 
-            if (index >= 9) {
-                index = 9;
-            }
-
         this.levels = (index == -1) ? 1 : index;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public static void main(String[] args) {
-
-        // levelPoint gồm 9 ký tự, ví dụ:
-        String levelPoint = "111111110";
-
-        User user = new User(1, levelPoint);
-
-        System.out.println("User ID: " + user.getId());
-        System.out.println("Level Point String: " + user.getLevelPoint());
-        System.out.println("High Score (Tổng điểm): " + user.getHigh_scores());
-        System.out.println("Levels (Chỉ số level cao nhất khác 0): " + user.getLevels());
-    }
 }
