@@ -52,10 +52,15 @@ public class GameController {
 
     @FXML
     AnchorPane gameLayout;
+    private Image background;
 
     public void initialize() {
         AudioController.getInstance().playGameMusic();
 
+        background = new Image(getClass().getResource("/res/gameBackground.png").toExternalForm());
+
+        canvas = new Canvas(1280, 720);
+        gc = canvas.getGraphicsContext2D();
         gameLayout.getChildren().add(canvas);
         uiLoop = new AnimationTimer() {
             @Override
@@ -70,7 +75,7 @@ public class GameController {
         };
         uiLoop.start();
 
-         LogicLoop = new Thread(() -> {
+        LogicLoop = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
 
                 synchronized(lock) {
@@ -243,8 +248,8 @@ public class GameController {
     private void draw() {
         Brick tempBrick;
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.drawImage(background, 0, 0, canvas.getWidth(), canvas.getHeight());;
+        //gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for(int i = 0; i < ball.getLives(); i++)
             gc.drawImage(ballImg, 1280 - (ball.getWidth() + 5) * i, 10,
                     ball.getWidth(), ball.getHeight());

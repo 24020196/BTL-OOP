@@ -8,14 +8,24 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.canvas.Canvas?>
 <AnchorPane fx:id="gameLayout" xmlns:fx="http://javafx.com/fxml"
             fx:controller="GameManager.GameController">
 
-    <ImageView fx:id="gameBackground">
+    <ImageView fx:id="gameBackground"
+               fitWidth="1280"
+               fitHeight="720"
+               preserveRatio="false"
+               AnchorPane.topAnchor="0.0"
+               AnchorPane.leftAnchor="0.0">
         <image>
-
+            <Image url="@../res/gameBackground.png" />
         </image>
     </ImageView>
+
+    <Canvas fx:id="gameCanvas" width="1280" height="720"/>
+
 </AnchorPane>
+
 
 
