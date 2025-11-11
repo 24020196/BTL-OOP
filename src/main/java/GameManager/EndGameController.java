@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -17,19 +18,24 @@ public class EndGameController {
 
     @FXML AnchorPane endGameLayout;
     @FXML ImageView endGameBackground;
-
-    public void initialize() {
-        eventListener();
-    }
+    @FXML Label loadingText;
 
     public void winGame() {
         endGameBackground.setImage(new Image(getClass().getResource("/res/youWin.png").toExternalForm()));
-        scoreDataAccessObject.setPoint(User.getUser().getUsername(), User.getUser().getLevelPoint());
+        Thread thread = new Thread(() -> {
+            loadingText.setVisible(true);
+            scoreDataAccessObject.setPoint(User.getUser().getUsername(), User.getUser().getLevelPoint());
+            scoreDataAccessObject.setHighScorces(User.getUser().getUsername(), User.getUser().getScore());
+            Platform.runLater(() -> {
+                eventListener();
+                loadingText.setVisible(false);
+            });
+        });
+        thread.start();
     }
 
     public void eventListener() {
         endGameLayout.setOnMouseClicked(mouseEvent -> {
-            System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
             if (mouseEvent.getX() >= 452 && mouseEvent.getX() <= 743) {
                 if (mouseEvent.getY() >= 536 && mouseEvent.getY() <= 601) {
                     try {

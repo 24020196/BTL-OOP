@@ -23,7 +23,21 @@ public class ScoreDataAccessObject {
             System.out.println(" Lỗi xem điểm: " + e.getMessage());
         }
     }
+    public void setHighScorces(String username, int score) {
+        String sql = "UPDATE users SET high_scores = ? WHERE username = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            stmt.setInt(1, score);
+            stmt.setString(2, username);
+            stmt.executeUpdate();
+
+            System.out.println(" Đã lưu điểm!");
+
+        } catch (SQLException e) {
+            System.out.println(" Lỗi lưu điểm: " + e.getMessage());
+        }
+    }
     public void getPoint(String username, User user) {
         String sql = "SELECT levelPoint FROM users WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();

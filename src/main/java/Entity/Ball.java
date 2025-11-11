@@ -35,6 +35,7 @@ public class Ball extends GameObject {
             move(speed * vectorX, speed * vectorY);
             bounceOff(paddle, bricks, sceneWidth, sceneHeight);
             if (getY() > paddle.getY()) {
+                audio.playBallFailing();
                 lives--;
                 if (lives <= 0) {
                     //System.out.println("Game Over!");

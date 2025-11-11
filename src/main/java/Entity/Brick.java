@@ -48,10 +48,15 @@ public class Brick extends GameObject {
 
 
     public double getOpacity() {
-        return  Math.abs(hitPoints/type);
+        if(type == 6 && hitPoints > 3) {
+            return 1;
+        } else if(type == 6 && hitPoints > 0) {
+            return 0.5;
+        }
+        return Math.abs(hitPoints/type);
     }
     public Image getImage() {
-        if(type < 0) {
+        if(type == 6) {
             if(indexImg == 0) return brickImg[3];
             indexImg++;
             if(indexImg == 9*3) {

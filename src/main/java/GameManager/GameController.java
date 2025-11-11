@@ -51,6 +51,7 @@ public class GameController {
     private AnimationTimer uiLoop;
     private final Object lock = new Object();
 
+    private Image background =  new Image(getClass().getResource("/res/gameBackground.jpg").toExternalForm());
 
     @FXML AnchorPane gameLayout;
 
@@ -217,15 +218,15 @@ public class GameController {
             if(ball.getLives() > User.getUser().getLevelPoint().charAt(level - 1) - '0') {
                 User.getUser().setLevelPoint(level - 1, ball.getLives());
             }
-            //Platform.runLater(() -> {
+            Platform.runLater(() -> {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/endGame.fxml"));
                     Parent root = loader.load();
                     EndGameController endGameController = loader.getController();
                     if (ball.getLives() > 0) {
                         endGameController.winGame();
-                        User.getUser().setCurrentLevel(level + 1);
-                    }
+                        User.getUser().setCurrentLevel(Math.max(9,level + 1));
+                    } else endGameController.eventListener();
                     Stage stage = (Stage) gameLayout.getScene().getWindow();
                     stage.setScene(new Scene(root));
                     stage.centerOnScreen();
@@ -233,7 +234,7 @@ public class GameController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            //});
+            });
         }
 
 
@@ -242,8 +243,7 @@ public class GameController {
     private void draw() {
         Brick tempBrick;
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.drawImage(background, 0, 0, canvas.getWidth(), canvas.getHeight());
         for(int i = 0; i < ball.getLives(); i++)
             gc.drawImage(ballImg, 1280 - (ball.getWidth() + 5) * i, 10,
                     ball.getWidth(), ball.getHeight());

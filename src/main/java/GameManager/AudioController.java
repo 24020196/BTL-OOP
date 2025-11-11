@@ -29,7 +29,7 @@ public class AudioController {
     private final AudioClip paddleHit = new AudioClip(getClass().getResource("/audio/paddle_hit.wav").toExternalForm());
     private final AudioClip wallHit = new AudioClip(getClass().getResource("/audio/paddle_hit.wav").toExternalForm());
     private final AudioClip powerUpShoot = new AudioClip(getClass().getResource("/audio/power_up_shoot.wav").toExternalForm());
-
+    private final AudioClip ballfailing = new AudioClip(getClass().getResource("/audio/game_lost.wav").toExternalForm());
 
     // Nhạc nền
     public void playMenuMusic() {
@@ -57,7 +57,7 @@ public class AudioController {
     public void playPaddleHit() { playInThread(paddleHit); }
     public void playWallHit() { playInThread(wallHit); }
     public void playPowerUpShoot() {playInThread(powerUpShoot);}
-
+    public void playBallFailing() {playInThread(ballfailing);}
     private void playInThread(AudioClip clip) {
         soundExecutor.execute(() -> clip.play(sfxVolume));
     }
