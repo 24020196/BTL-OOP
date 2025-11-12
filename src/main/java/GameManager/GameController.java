@@ -51,7 +51,16 @@ public class GameController {
     private AnimationTimer uiLoop;
     private final Object lock = new Object();
 
-    private Image background =  new Image(getClass().getResource("/res/gameBackground.jpg").toExternalForm());
+    private static final Image[] background =  {
+            new Image(GameController.class.getResource("/res/level1.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level2.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level3.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level4.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level5.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level6.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level7.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level8.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level9.png").toExternalForm())};
 
     @FXML AnchorPane gameLayout;
 
@@ -63,8 +72,6 @@ public class GameController {
             public void handle(long now) {
                 synchronized(lock) {
                     draw();
-
-
                     endgame();
                 }
             }
@@ -243,7 +250,7 @@ public class GameController {
     private void draw() {
         Brick tempBrick;
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.drawImage(background, 0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.drawImage(background[level-1], 0, 0, canvas.getWidth(), canvas.getHeight());
         for(int i = 0; i < ball.getLives(); i++)
             gc.drawImage(ballImg, 1280 - (ball.getWidth() + 5) * i, 10,
                     ball.getWidth(), ball.getHeight());

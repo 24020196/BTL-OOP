@@ -81,7 +81,7 @@ public class LevelMapController {
     }
 
     public void drawStar() {
-        System.out.println(User.getUser().getLevelPoint());
+       // System.out.println(User.getUser().getLevelPoint());
 
     }
 

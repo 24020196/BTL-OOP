@@ -44,7 +44,7 @@ public class MenuController {
     public void connectDatabase() {
         Thread thread = new Thread(() -> {
              {
-                 loadingText.setVisible(true);
+                loadingText.setVisible(true);
                 data.getPoint(User.getUser().getUsername(),User.getUser());
                 User.getUser().highScores.clear();
                 data.getHighScorces();
@@ -76,9 +76,7 @@ public class MenuController {
 
 
         btnPlayGame.setOnMouseClicked(event -> {
-            //levelLayout.setVisible(true);
-            //menuLayout.setVisible(false);
-            try {
+             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
                 Parent root = loader.load();
                 LevelMapController levelMapController = loader.getController();
