@@ -192,7 +192,7 @@ public class GameController {
             bulletCooldown = 0;
             bulletLeft--;
             System.out.println(bulletLeft);
-            bullet.add(new GameObject(paddle.getX() + paddle.getWidth()/2, paddle.getY() - 10, 10,10));
+            bullet.add(new Bullet(paddle.getX() + paddle.getWidth()/2, paddle.getY() - 10, 10,10));
         } else bulletCooldown += 25;
         boolean tempBreak = false;
         for(GameObject tmpBullet : bullet) {
