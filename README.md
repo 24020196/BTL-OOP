@@ -60,7 +60,9 @@ The game uses multiple threads to ensure smooth performance:
 
 1. Clone the project from the repository.
 2. Open the project in the IDE.
-3. Run the class Login in RenderView directory.
+3. Apply dependencies: File -> Project Structure -> Modules -> Dependencies apply all module source
+4. Add sql_connector libs: File -> Project Structure -> Modules -> Dependencies -> add JARs ->"mysql-connector-j-9.4.0\mysql-connector-j-9.4.0\mysql-connector-j-9.4.0.jar" -> apply module
+5. Run the class Login in RenderView directory.
 
 ## Usage
 
