@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -116,7 +117,21 @@ public class LevelMapController {
             });
         }
     }
-
+    @FXML
+    private void onBackToMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/Menu.fxml"));
+            Scene menuScene = new Scene(loader.load(), 1280, 720);
+            MenuController menu = loader.getController();
+            menu.connectDatabase();
+            Stage stage = (Stage) levelLayout.getScene().getWindow();
+            stage.setScene(menuScene);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
