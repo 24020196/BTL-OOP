@@ -15,10 +15,10 @@ Group 6 - Class 2526I_INT2204_4
 This is a classic Arkanoid game developed in Java as a final project for Object-Oriented Programming course. The project demonstrates the implementation of OOP principles and design patterns.
 
 **Key features:**
-1. The game is developed using Java 17+ with JavaFX/Swing for GUI.
+1. The game is developed using Java 11+ with JavaFX/Swing for GUI.
 2. Implements core OOP principles: Encapsulation, Inheritance, Polymorphism, and Abstraction.
-3. Applies multiple design patterns: Singleton, Factory Method, Strategy, Observer, and State.
-4. Features multithreading for smooth gameplay and responsive UI.
+3. Applies design patterns: Singleton.
+4. Features multithreading for smooth gameplay, responsive UI and online database without UI blocking.
 5. Includes sound effects, animations, and power-up systems.
 6. Supports save/load game functionality and leaderboard system.
 
@@ -33,11 +33,7 @@ This is a classic Arkanoid game developed in Java as a final project for Object-
 ## UML Diagram
 
 ### Class Diagram
-![Class Diagram](docs/uml/class-diagram.png)
-
-_Có thể sử dụng IntelliJ để generate ra Class Diagrams: https://www.youtube.com/watch?v=yCkTqNxZkbY_
-
-*Complete UML diagrams are available in the `docs/uml/` folder*
+![Class Diagram](readmeImage/programDiagram.png)
 
 ---
 
@@ -87,59 +83,45 @@ The game uses multiple threads to ensure smooth performance:
 ### Power-ups
 | Icon | Name | Effect |
 |------|------|--------|
-| 🟦 | Expand Paddle | Increases paddle width for 10 seconds |
-| 🟥 | Shrink Paddle | Decreases paddle width for 10 seconds |
-| ⚡ | Fast Ball | Increases ball speed by 30% |
-| 🐌 | Slow Ball | Decreases ball speed by 30% |
-| 🎯 | Multi Ball | Spawns 2 additional balls |
-| 🔫 | Laser Gun | Shoot lasers to destroy bricks for 15 seconds |
-| 🧲 | Magnet | Ball sticks to paddle, launch with SPACE |
-| 🛡️ | Shield | Protects from losing one life |
-| 🔥 | Fire Ball | Ball passes through bricks for 12 seconds |
+| <img src="src/main/resources/res/powerUp_BigPaddle.png" width="32" alt="icon"> | Expand Paddle | Increases paddle width |
+| <img src="src/main/resources/res/powerUp_SmallPaddle.png" width="32" alt="icon">  | Shrink Paddle | Decreases paddle width |
+| <img src="src/main/resources/res/powerUp_Fast.png" width="32" alt="icon">  | Fast Ball | Increases ball speed by 20% |
+| <img src="src/main/resources/res/powerUp_Slow.png" width="32" alt="icon">  | Slow Ball | Decreases ball speed by 20% |
+| <img src="src/main/resources/res/powerUp_Shoot.png" width="32" alt="icon">  | Shoot | Shoot ball to destroy bricks for 9 seconds |
+| <img src="src/main/resources/res/powerUp_FireBall.png" width="32" alt="icon">  | Fire Ball | Hits a brick and explodes, destroying a 3×3 area of bricks. |
 
 ### Scoring System
-- Normal Brick: 100 points
-- Strong Brick: 300 points
-- Explosive Brick: 500 points + nearby bricks
-- Power-up Collection: 50 points
-- Combo Multiplier: x2, x3, x4... for consecutive hits
-
+- 1 ball left : 1 point
+- 2 ball left : 2 point
+- 3 ball left : 3 point
 ---
 
 ## Demo
 
 ### Screenshots
 **Login**  
-![Login](docs/screenshots/menu.png)
+![Login](readmeImage/login.png)
 
 **Register**  
-![Login](docs/screenshots/menu.png)
+![Login](readmeImage/register.png)
 
 **Main Menu**  
-![Main Menu](docs/screenshots/menu.png)
+![Main Menu](readmeImage/menu.png)
 
 **HighScores**  
-![HighScores](docs/screenshots/leaderboard.png)
+![HighScores](readmeImage/scoreboard.png)
 
 **Setting**  
-![Setting](docs/screenshots/leaderboard.png)
-
-
+![Setting](readmeImage/setting.png)
 
 **LevelMap**  
-![LevelMap](docs/screenshots/leaderboard.png)
+![LevelMap](readmeImage/levelmap.png)
 
 **Gameplay**  
-![Gameplay](docs/screenshots/gameplay.png)
-
-**Power-ups in Action**  
-![Power-ups](docs/screenshots/powerups.png)
-
+![Gameplay](readmeImage/gameplay.png)
 
 ### Video Demo
-[![Video Demo](docs/screenshots/video-thumbnail.png)](docs/demo/gameplay.mp4)
-
-*Full gameplay video is available in `docs/demo/gameplay.mp4`*
+[![Video Demo](readmeImage/gameplay.png)](readmeImage/demo.mp4)
 
 ---
 
@@ -152,7 +134,6 @@ The game uses multiple threads to ensure smooth performance:
    - Co-op multiplayer mode
 
 2. **Enhanced gameplay**
-   - Boss battles at end of worlds
    - More power-up varieties (freeze time, shield wall, etc.)
    - Achievements system
 
@@ -168,10 +149,14 @@ The game uses multiple threads to ensure smooth performance:
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| Java | 17+ | Core language |
-| JavaFX | 19.0.2 | GUI framework |
-| Maven | 3.9+ | Build tool |
-| Jackson | 2.15.0 | JSON processing |
+| Java | 11 | Core language |
+| JavaFX | 17.0.14 | GUI framework |
+| Maven | 3.9.9 | Build tool |
+| ControlsFX | 11.2.1 | UI controls library |
+| FormsFX | 11.6.0 | Form controls library |
+| BootstrapFX | 0.4.0 | CSS/Bootstrap styling |
+| FXGL | 11.17 | Game library |
+| JUnit | 5.12.1 | Unit testing |
 
 ---
 
@@ -192,4 +177,4 @@ This project is developed for educational purposes only.
 
 ---
 
-*Last updated: [Ngày/Tháng/Năm]*
+*Last updated: [13/11/2025]*
