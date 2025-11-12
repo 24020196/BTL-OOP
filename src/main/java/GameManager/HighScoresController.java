@@ -3,8 +3,6 @@ package GameManager;
 import Entity.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
@@ -36,7 +34,6 @@ public class HighScoresController {
     }
 
     private void loadHighScores() {
-        Queue<Pair<String, Integer>> scores = User.getUser().highScores;
         Label[] nameLabels = {name1, name2, name3, name4, name5};
         Label[] scoreLabels = {score1, score2, score3, score4, score5};
 

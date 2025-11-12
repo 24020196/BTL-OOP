@@ -322,7 +322,7 @@ public class GameController {
         int temp = 0;
         for(int i = 0; i < 8; i++)
             for(int j = 0; j < 12; j++)
-                if(bricks[i][j].getHp() > 0)temp++;
+                if(bricks[i][j].getHp() > 0 && bricks[i][j].getType() != 6)temp++;
         return temp;
     }
 
