@@ -42,7 +42,7 @@ public class MenuController {
     }
 
     public void connectDatabase() {
-        Thread thread = new Thread(() -> {
+        Thread database = new Thread(() -> {
              {
                 loadingText.setVisible(true);
                 data.getPoint(User.getUser().getUsername(),User.getUser());
@@ -55,7 +55,7 @@ public class MenuController {
 
             }
         });
-        thread.start();
+        database.start();
 
     }
 
