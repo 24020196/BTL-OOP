@@ -22,7 +22,7 @@ public class EndGameController {
 
     public void winGame() {
         endGameBackground.setImage(new Image(getClass().getResource("/res/youWin.png").toExternalForm()));
-        Thread thread = new Thread(() -> {
+        Thread database = new Thread(() -> {
             loadingText.setVisible(true);
             scoreDataAccessObject.setPoint(User.getUser().getUsername(), User.getUser().getLevelPoint());
             scoreDataAccessObject.setHighScorces(User.getUser().getUsername(), User.getUser().getScore());
@@ -31,7 +31,7 @@ public class EndGameController {
                 loadingText.setVisible(false);
             });
         });
-        thread.start();
+        database.start();
     }
 
     public void eventListener() {
