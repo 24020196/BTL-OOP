@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane fx:id="levelLayout" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="GameManager.LevelMapController"
+            prefWidth="1280" prefHeight="720">
+
+    <ImageView fx:id="levelMapBackground"
+                fitWidth="1280" fitHeight="720">
+        <image>
+            <Image url="@../res/levelBackground.png"/>
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level1" fitHeight="146.0" fitWidth="214.0" layoutX="8.0" layoutY="145.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet0.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level2" fitHeight="104.0" fitWidth="106.0" layoutX="536.0" layoutY="66.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet1.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level3" fitHeight="104.0" fitWidth="158.0" layoutX="956.0" layoutY="131.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet2.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level4" fitHeight="140.0" fitWidth="117.0" layoutX="1148.0" layoutY="355.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet3.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level5" fitHeight="104.0" fitWidth="106.0" layoutX="852.0" layoutY="570.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet4.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level6" fitHeight="104.0" fitWidth="106.0" layoutX="464.0" layoutY="570.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet5.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level7" fitHeight="104.0" fitWidth="106.0" layoutX="52.0" layoutY="422.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet6.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level8" fitHeight="104.0" fitWidth="106.0" layoutX="516.0" layoutY="308.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet7.png" />
+        </image>
+    </ImageView>
+
+    <ImageView fx:id="level9" fitHeight="104.0" fitWidth="106.0" layoutX="933.0" layoutY="370.0" preserveRatio="true">
+        <image>
+            <Image url="@../res/planet8.png" />
+        </image>
+    </ImageView>
+
+    <Button fx:id="backToMenuButton"
+            text="BACK"
+            layoutX="14.0" layoutY="14.0"
+            onAction="#onBackToMenu"
+            prefHeight="40.0" prefWidth="82.0"
+            style="-fx-font-family: 'Press Start 2P';
+                   -fx-font-size: 18px;
+                   -fx-text-fill: white;
+                   -fx-background-color: transparent;
+                   -fx-border-color: white;
+                   -fx-border-width: 2px;
+                   -fx-border-radius: 8px;
+                   -fx-cursor: hand;"/>
+</AnchorPane>
+
+
