@@ -12,7 +12,7 @@ public class ScoreDataAccessObject {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             try (ResultSet rs = stmt.executeQuery()) {
-                System.out.println("=== BẢNG ĐIỂM ===");
+                System.out.println("Đã lấy BẢNG ĐIỂM");
                 while (rs.next()) {
                     User.getUser().highScores.add(new Pair<>(rs.getString("username")
                             , rs.getInt("high_scores")));
@@ -23,13 +23,28 @@ public class ScoreDataAccessObject {
             System.out.println(" Lỗi xem điểm: " + e.getMessage());
         }
     }
+    public void setHighScorces(String username, int score) {
+        String sql = "UPDATE users SET high_scores = ? WHERE username = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+            stmt.setInt(1, score);
+            stmt.setString(2, username);
+            stmt.executeUpdate();
+
+            System.out.println(" Đã lưu highscore!");
+
+        } catch (SQLException e) {
+            System.out.println(" Lỗi lưu điểm: " + e.getMessage());
+        }
+    }
     public void getPoint(String username, User user) {
         String sql = "SELECT levelPoint FROM users WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
+                System.out.println("Đã lấy levelPoint");
                 while (rs.next()) {
                     user.setLevelPoint(rs.getString("LevelPoint"));
                     //return rs.getString("LevelPoint");
@@ -49,7 +64,7 @@ public class ScoreDataAccessObject {
             stmt.setString(2, username);
             stmt.executeUpdate();
 
-            System.out.println(" Đã lưu điểm!");
+            System.out.println(" Đã lưu levelPoint!");
 
         } catch (SQLException e) {
             System.out.println(" Lỗi lưu điểm: " + e.getMessage());

@@ -46,31 +46,46 @@ public class GameController {
     private static final Image ballImg = new Image(Brick.class.getResource("/res/ball0.png").toExternalForm());
     private static final Image paddleImg = new Image(Brick.class.getResource("/res/paddle.png").toExternalForm());
     private int level = 0;
-
+    private static final AudioController audio = AudioController.getInstance();
     private Thread LogicLoop;
     private AnimationTimer uiLoop;
     private final Object lock = new Object();
 
+    private static final Image[] background =  {
+            new Image(GameController.class.getResource("/res/level1.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level2.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level3.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level4.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level5.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level6.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level7.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level8.png").toExternalForm()),
+            new Image(GameController.class.getResource("/res/level9.png").toExternalForm())};
 
     @FXML AnchorPane gameLayout;
 
     public void initialize() {
+        AudioController.getInstance().playGameMusic();
         gameLayout.getChildren().add(canvas);
         uiLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                draw();
+                synchronized(lock) {
+                    draw();
+                    endgame();
+                }
             }
         };
         uiLoop.start();
 
         LogicLoop = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-
-                paddle.move();
-                renderBall();
-                renderPowerUp();
-                renderBullet();
+                synchronized(lock) {
+                    paddle.move();
+                    renderPowerUp();
+                    renderBullet();
+                    renderBall();
+                }
                 try {
                     Thread.sleep(25);
                 } catch (InterruptedException e) {
@@ -141,11 +156,11 @@ public class GameController {
             if(ball.newDestroyBrick && powerUpLeft > 0) {
                 if(powerUpLeft>=Math.random()*brickLeft()) {
                     powerUpLeft--;
+                    System.out.println(powerUpLeft);
                     //powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) 5));
                     powerUp.add(new PowerUp(ball.getX(), ball.getY(),(int) (Math.random()*6)));
                 }
             }
-            endgame();
             ball.newDestroyBrick = false;
         } else {
             ball.reset(paddle);
@@ -156,6 +171,7 @@ public class GameController {
         for(PowerUp tmpPowerUp:powerUp) {
             tmpPowerUp.move(0,3);
             if(tmpPowerUp.checkCollision(paddle)) {
+                audio.playPowerUp();
                 setPowerUp(tmpPowerUp.getType());
                 powerUpDelete.add(tmpPowerUp);
             }else
@@ -172,6 +188,7 @@ public class GameController {
 
     private  void renderBullet() {
         if(bulletLeft > 0 && bulletCooldown >= 300) {
+            audio.playPowerUpShoot();
             bulletCooldown = 0;
             bulletLeft--;
             System.out.println(bulletLeft);
@@ -205,7 +222,7 @@ public class GameController {
             System.out.println("Game Over");
             uiLoop.stop();
             LogicLoop.interrupt();
-            if(ball.getLives() > User.getUser().getLevelPoint().charAt(level - 1)) {
+            if(ball.getLives() > User.getUser().getLevelPoint().charAt(level - 1) - '0') {
                 User.getUser().setLevelPoint(level - 1, ball.getLives());
             }
             Platform.runLater(() -> {
@@ -213,7 +230,10 @@ public class GameController {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/endGame.fxml"));
                     Parent root = loader.load();
                     EndGameController endGameController = loader.getController();
-                    if (ball.getLives() > 0) endGameController.winGame();
+                    if (ball.getLives() > 0) {
+                        endGameController.winGame();
+                        User.getUser().setCurrentLevel(Math.max(9,level + 1));
+                    } else endGameController.eventListener();
                     Stage stage = (Stage) gameLayout.getScene().getWindow();
                     stage.setScene(new Scene(root));
                     stage.centerOnScreen();
@@ -229,9 +249,8 @@ public class GameController {
 
     private void draw() {
         Brick tempBrick;
-        //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.drawImage(background[level-1], 0, 0, canvas.getWidth(), canvas.getHeight());
         for(int i = 0; i < ball.getLives(); i++)
             gc.drawImage(ballImg, 1280 - (ball.getWidth() + 5) * i, 10,
                     ball.getWidth(), ball.getHeight());
@@ -245,6 +264,7 @@ public class GameController {
                 }
             }
         }
+        gc.setGlobalAlpha(1);
         for(PowerUp tmpPowerUp:powerUp) {
             gc.drawImage(tmpPowerUp.getImage(), tmpPowerUp.getX(), tmpPowerUp.getY(),
                     tmpPowerUp.getWidth(), tmpPowerUp.getHeight());
@@ -254,7 +274,6 @@ public class GameController {
             gc.drawImage(bulletImg, tmpBullet.getX(), tmpBullet.getY(),
                     tmpBullet.getWidth(), tmpBullet.getHeight());
         }
-        gc.setGlobalAlpha(1);
         gc.drawImage(ball.getImg(0), ball.getX(), ball.getY(),
                 ball.getWidth(), ball.getHeight());
 
@@ -303,7 +322,7 @@ public class GameController {
         int temp = 0;
         for(int i = 0; i < 8; i++)
             for(int j = 0; j < 12; j++)
-                if(!bricks[i][j].isDestroyed())temp++;
+                if(bricks[i][j].getHp() > 0)temp++;
         return temp;
     }
 

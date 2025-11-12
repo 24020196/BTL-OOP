@@ -9,6 +9,7 @@ module org {
     requires transitive javafx.graphics;
     requires java.sql;
     requires transitive javafx.base;
+    requires javafx.media;
     opens Entity to javafx.fxml;
     exports Entity;
     exports GameManager;

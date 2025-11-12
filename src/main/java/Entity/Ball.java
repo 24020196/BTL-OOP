@@ -1,7 +1,7 @@
 package Entity;
 
 import javafx.scene.image.Image;
-
+import GameManager.AudioController;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +19,7 @@ public class Ball extends GameObject {
     };
     private boolean onPaddle = true;
     public boolean newDestroyBrick = false;
+    private AudioController audio = AudioController.getInstance();
 
     public Ball(double x, double y, double width, double height) {
         super(x, y, width, height);
@@ -34,6 +35,7 @@ public class Ball extends GameObject {
             move(speed * vectorX, speed * vectorY);
             bounceOff(paddle, bricks, sceneWidth, sceneHeight);
             if (getY() > paddle.getY()) {
+                audio.playBallFailing();
                 lives--;
                 if (lives <= 0) {
                     //System.out.println("Game Over!");
@@ -56,16 +58,18 @@ public class Ball extends GameObject {
     public void bounceOff(Paddle paddle, Brick[][] bricks, double sceneWidth, double sceneHeight) {
         // chạm khung trái phải
         if (getX() <= 0 || getX() + getWidth() >= sceneWidth) {
+            audio.playWallHit();
             move(-speed * vectorX, -speed * vectorY);
-            vectorX *= -0.98;
+            vectorX *= -1;
         }
         if (getY() <= 0) {
             move(-speed * vectorX, -speed * vectorY);
-            vectorY*=-0.98;
+            vectorY*=-1;
         }
 
         if (checkCollision(paddle)) {
             if (checkCollision(paddle)) {
+                audio.playPaddleHit();
                 double ballCenter = getX() + getWidth() / 2.0;
                 double paddleCenter = paddle.getX() + paddle.getWidth() / 2.0;
                 double distance = (ballCenter - paddleCenter) / (paddle.getWidth() / 2.0); // -1..1
@@ -83,7 +87,13 @@ public class Ball extends GameObject {
                 Brick brick = bricks[i][j];
                 if (!brick.isDestroyed() && checkCollision(brick)) {
                     brick.hit();
-                    newDestroyBrick = brick.isDestroyed();
+                    if (brick.isDestroyed()) {
+                        audio.playBrickBreak();
+                        newDestroyBrick = true;
+                    } else {
+                        audio.playBrickHit();
+                        newDestroyBrick = false;
+                    }
                     move(-speed * vectorX, -speed * vectorY);
                     double overlapLeft = getX() + getWidth() - brick.getX();
                     double overlapRight = brick.getX() + brick.getWidth() - getX();
@@ -93,9 +103,9 @@ public class Ball extends GameObject {
                     double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
                             Math.min(overlapTop, overlapBottom));
                     if (minOverlap == overlapLeft || minOverlap == overlapRight) {
-                        vectorX *= -0.98;
+                        vectorX *= -1;
                     } else {
-                        vectorY *= -0.98;
+                        vectorY *= -1;
                     }
                     if(fireBall) {
                         fireBall = false;

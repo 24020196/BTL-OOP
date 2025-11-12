@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -25,11 +26,13 @@ import static javafx.application.Application.launch;
 public class MenuController {
     @FXML AnchorPane mainLayout;
     @FXML AnchorPane menuLayout;
+    @FXML AnchorPane setting;
     @FXML ImageView menuBackground;
     @FXML ImageView btnPlayGame;
     @FXML ImageView btnHighScores;
     @FXML ImageView btnSetting;
     @FXML ImageView btnExit;
+    @FXML Label loadingText;
 
     private ScoreDataAccessObject data = new ScoreDataAccessObject();
 
@@ -39,17 +42,24 @@ public class MenuController {
     }
 
     public void connectDatabase() {
-        data.getPoint(User.getUser().getUsername(),User.getUser());
-        User.getUser().highScores.clear();
-        data.getHighScorces();
+        Thread thread = new Thread(() -> {
+             {
+                loadingText.setVisible(true);
+                data.getPoint(User.getUser().getUsername(),User.getUser());
+                User.getUser().highScores.clear();
+                data.getHighScorces();
+                Platform.runLater(() -> {
+                     clickEvents();
+                     loadingText.setVisible(false);
+                });
+
+            }
+        });
+        thread.start();
+
     }
 
-    private void mainLayoutEvents() {
-        mainLayout.setOnMouseClicked(mouseEvent -> {
-            //System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
-        });
-
-
+    public void mainLayoutEvents() {
         mainLayout.setOnMouseMoved( mouseMove -> {
             setVisibleImageView(btnPlayGame, mouseMove.getX(), mouseMove.getY());
             setVisibleImageView(btnHighScores, mouseMove.getX(), mouseMove.getY());
@@ -57,11 +67,16 @@ public class MenuController {
             setVisibleImageView(btnExit, mouseMove.getX(), mouseMove.getY());
 
         });
+    }
+
+    public void clickEvents() {
+        mainLayout.setOnMouseClicked(mouseEvent -> {
+            //System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
+        });
+
 
         btnPlayGame.setOnMouseClicked(event -> {
-            //levelLayout.setVisible(true);
-            //menuLayout.setVisible(false);
-            try {
+             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
                 Parent root = loader.load();
                 LevelMapController levelMapController = loader.getController();
@@ -83,6 +98,19 @@ public class MenuController {
                 Stage stage = (Stage) mainLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        btnSetting.setOnMouseClicked(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/SettingView.fxml"));
+                AnchorPane settingPane = loader.load();
+                setting.getChildren().setAll(settingPane);
+                menuLayout.setVisible(false);
+                setting.setVisible(true);
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -12,7 +12,8 @@
             fx:controller="GameManager.GameController"
             prefWidth="1280"  prefHeight="720">
 
-    <ImageView fx:id="gameBackground">
+    <ImageView fx:id="gameBackground"
+               fitWidth="1280"  fitHeight="720">
         <image>
 
         </image>
