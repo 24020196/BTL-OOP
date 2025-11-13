@@ -9,9 +9,11 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <AnchorPane fx:id="levelLayout" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="GameManager.LevelMapController">
+            fx:controller="GameManager.LevelMapController"
+            prefWidth="1280" prefHeight="720">
 
-    <ImageView fx:id="levelMapBackground">
+    <ImageView fx:id="levelMapBackground"
+               fitWidth="1280" fitHeight="720">
         <image>
             <Image url="@../res/levelBackground.png"/>
         </image>
@@ -71,5 +73,18 @@
         </image>
     </ImageView>
 
-
+    <Button fx:id="backToMenuButton"
+            text="BACK"
+            layoutX="14.0" layoutY="14.0"
+            onAction="#onBackToMenu"
+            prefHeight="40.0" prefWidth="82.0"
+            style="-fx-font-family: 'Press Start 2P';
+                   -fx-font-size: 18px;
+                   -fx-text-fill: white;
+                   -fx-background-color: transparent;
+                   -fx-border-color: white;
+                   -fx-border-width: 2px;
+                   -fx-border-radius: 8px;
+                   -fx-cursor: hand;"/>
 </AnchorPane>
+

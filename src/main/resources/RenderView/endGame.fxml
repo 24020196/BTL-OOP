@@ -19,5 +19,17 @@
         </image>
     </ImageView>
 
-
+    <Label fx:id="loadingText"
+           visible="false"
+           text="Loading database..."
+           layoutX="0" layoutY="0"
+           alignment="center"
+           prefWidth="1280" prefHeight="720"
+           style="-fx-font-family: 'Press Start 2P';
+              -fx-font-size: 28px;
+              -fx-font-weight: bold;
+              -fx-text-fill: red;
+              -fx-background-color: rgba(0, 0, 0, 0.8);
+              -fx-alignment: center;"/>
 </AnchorPane>
+

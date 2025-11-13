@@ -1,78 +1,65 @@
 package GameManager;
 
 import Entity.User;
-import GameDatabase.ScoreDataAccessObject;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.text.Font;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import javafx.util.Pair;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Queue;
 
+/**
+ * Controller cho màn hình Bảng xếp hạng (highScores.fxml).
+ * Hiển thị 5 người dùng có điểm cao nhất.
+ */
 public class HighScoresController {
 
-    @FXML private ListView<String> highScoreList;
+    // Các Label để hiển thị tên và điểm, được tiêm (inject) từ FXML
+    @FXML private Label name1, name2, name3, name4, name5;
+    @FXML private Label score1, score2, score3, score4, score5;
 
-    private ScoreDataAccessObject scoreDataAccessObject = new ScoreDataAccessObject();
-
+    /**
+     * Phương thức này được gọi tự động khi FXML được tải xong.
+     * Tải và hiển thị điểm cao.
+     */
     public void initialize() {
-        loadArcadeFont();
         loadHighScores();
     }
 
-    //load font arcade
-    private void loadArcadeFont() {
-        try (InputStream fontStream = getClass().getResourceAsStream("/fonts/arcade.ttf")) {
-            if (fontStream != null) {
-                Font arcade = Font.loadFont(fontStream, 18);
-                highScoreList.setStyle("-fx-font-family: 'Arcade'; -fx-font-size: 18px; -fx-text-fill: white;");
-            } else {
-                System.err.println("Không tìm thấy font arcade.ttf");
-            }
+    /**
+     * Xử lý sự kiện khi nhấn nút "Quay lại" (Back to Menu).
+     * Chuyển cảnh về màn hình Menu.
+     */
+    @FXML
+    private void onBackToMenu() {
+        try {FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/Menu.fxml"));
+            Scene menuScene = new Scene(loader.load(), 1280, 720);
+            MenuController menu = loader.getController();
+            menu.clickEvents(); // (Có vẻ hàm này không cần thiết ở đây, nên gọi connectDatabase)
+            Stage stage = (Stage) name1.getScene().getWindow();
+            stage.setScene(menuScene);
+            stage.centerOnScreen();
+            stage.show();
         } catch (Exception e) {
-            System.err.println("Lỗi khi nạp font arcade.ttf:");
             e.printStackTrace();
         }
     }
 
+    /**
+     * Tải dữ liệu điểm cao từ hàng đợi (Queue) trong User Singleton
+     * và điền vào các Label tương ứng.
+     */
     private void loadHighScores() {
-        //lấy danh sách điểm
-        Queue<Pair<String, Integer>> scores = User.getUser().highScores;
-        List<Pair<String, Integer>> listScores = new ArrayList<>(scores);
-        listScores.sort(Comparator.comparing(Pair::getValue, Comparator.reverseOrder()));
+        Label[] nameLabels = {name1, name2, name3, name4, name5};
+        Label[] scoreLabels = {score1, score2, score3, score4, score5};
 
-
-        // Đưa dữ liệu vào ListView
-        ObservableList<String> displayScores = FXCollections.observableArrayList();
-        for (int i = 0; i < listScores.size(); i++) {
-            Pair<String, Integer> s = listScores.get(i);
-            displayScores.add(String.format("%2d. %-10s %6d điểm", i + 1, s.getKey(), s.getValue()));
+        int i = 0;
+        for (Pair<String, Integer> temp : User.getUser().highScores) {
+            nameLabels[i].setText(temp.getKey());
+            scoreLabels[i].setText(String.valueOf(temp.getValue()));
+            i++;
+            if (i >= 5) break; // Đảm bảo không vượt quá 5
         }
-
-        highScoreList.setItems(displayScores);
-
-        /*for (Pair<String, Integer> temp : User.getUser().highScores) {
-            System.out.println(temp.getKey() + " " + temp.getValue());
-        }*/
     }
-
-    public void winGame() {
-        try {
-            String username = User.getUser().getUsername();
-            String point = User.getUser().getLevelPoint();
-            scoreDataAccessObject.setPoint(username, point);
-            System.out.println("Cập nhật điểm thành công cho " + username + ": " + point);
-        } catch (Exception e) {
-            System.err.println("Lỗi khi lưu điểm:");
-            e.printStackTrace();
-        }
-
-        //scoreDataAccessObject.setPoint(User.getUser().getUsername(), User.getUser().getLevelPoint());
-    }
-
 }

@@ -7,29 +7,51 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * Controller cho màn hình kết thúc trò chơi (endGame.fxml).
+ * Xử lý việc hiển thị thắng/thua, lưu điểm, và điều hướng (chơi lại, về menu).
+ */
 public class EndGameController {
     private ScoreDataAccessObject scoreDataAccessObject = new ScoreDataAccessObject();
 
     @FXML AnchorPane endGameLayout;
     @FXML ImageView endGameBackground;
+    @FXML Label loadingText;
 
-    public void initialize() {
-        eventListener();
-    }
-
+    /**
+     * Được gọi khi người chơi thắng màn.
+     * Hiển thị hình ảnh "You Win", sau đó bắt đầu một luồng mới để lưu
+     * điểm (cả điểm màn và tổng điểm) vào cơ sở dữ liệu.
+     * Sau khi lưu xong, kích hoạt {@link #eventListener()}.
+     */
     public void winGame() {
         endGameBackground.setImage(new Image(getClass().getResource("/res/youWin.png").toExternalForm()));
-        scoreDataAccessObject.setPoint(User.getUser().getUsername(), User.getUser().getLevelPoint());
+        Thread thread = new Thread(() -> {
+            loadingText.setVisible(true);
+            scoreDataAccessObject.setPoint(User.getUser().getUsername(), User.getUser().getLevelPoint());
+            scoreDataAccessObject.setHighScorces(User.getUser().getUsername(), User.getUser().getScore());
+
+            Platform.runLater(() -> {
+                eventListener();
+                loadingText.setVisible(false);
+            });
+        });
+        thread.start();
     }
 
+    /**
+     * Thiết lập các trình xử lý sự kiện click chuột cho màn hình kết thúc.
+     * Sử dụng tọa độ click để xác định "nút" nào được nhấn (Chơi lại, Map, Thoát).
+     * (Hàm này cũng được gọi trực tiếp nếu người chơi thua).
+     */
     public void eventListener() {
         endGameLayout.setOnMouseClicked(mouseEvent -> {
-            System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
             if (mouseEvent.getX() >= 452 && mouseEvent.getX() <= 743) {
                 if (mouseEvent.getY() >= 536 && mouseEvent.getY() <= 601) {
                     try {
@@ -50,7 +72,7 @@ public class EndGameController {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
                         Parent root = loader.load();
                         LevelMapController levelMapController = loader.getController();
-                        levelMapController.drawStar();
+                        levelMapController.drawStar(); // (Có vẻ hàm này chưa làm gì)
                         Stage stage = (Stage) endGameLayout.getScene().getWindow();
                         stage.setScene(new Scene(root));
                         stage.show();
@@ -59,6 +81,7 @@ public class EndGameController {
                     }
                 }
             }
+
             if (mouseEvent.getX() >= 552 && mouseEvent.getX() <= 640) {
                 if (mouseEvent.getY() >= 674 && mouseEvent.getY() <= 700) {
                     Platform.exit();
