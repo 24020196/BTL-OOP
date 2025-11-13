@@ -1,7 +1,18 @@
 package Entity;
 
+/**
+ * Lớp tiện ích chứa các giá trị không đổi (hằng số) và dữ liệu cấu hình.
+ * Chủ yếu dùng để cung cấp bản đồ gạch (brick map) cho các màn chơi.
+ */
 public class VariableValue {
 
+    /**
+     * Trả về một mảng 2D (8x12) biểu diễn bản đồ gạch cho màn chơi được chỉ định.
+     * Mỗi số nguyên trong mảng đại diện cho một loại gạch (hoặc 0 nếu là ô trống).
+     *
+     * @param level Chỉ số của màn chơi (bắt đầu từ 1).
+     * @return Mảng 2D int[8][12] của bản đồ gạch.
+     */
     public int[][] brickMap(int level) {
         int[][] tmp;
         switch (level) {

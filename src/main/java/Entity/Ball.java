@@ -5,6 +5,11 @@ import GameManager.AudioController;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Đại diện cho quả bóng trong trò chơi, xử lý chuyển động, va chạm và trạng thái của nó.
+ * Nó tự quản lý vị trí, vận tốc và tương tác với các đối tượng khác trong trò chơi
+ * như thanh đỡ, gạch và các bức tường.
+ */
 public class Ball extends GameObject {
     private double speed;
     private double angle;
@@ -21,6 +26,14 @@ public class Ball extends GameObject {
     public boolean newDestroyBrick = false;
     private AudioController audio = AudioController.getInstance();
 
+    /**
+     * Khởi tạo một đối tượng Ball mới tại vị trí và kích thước được chỉ định.
+     *
+     * @param x      Tọa độ x ban đầu.
+     * @param y      Tọa độ y ban đầu.
+     * @param width  Chiều rộng của quả bóng.
+     * @param height Chiều cao của quả bóng.
+     */
     public Ball(double x, double y, double width, double height) {
         super(x, y, width, height);
         this.speed = 10;
@@ -30,6 +43,15 @@ public class Ball extends GameObject {
         this.lives = 3;
     }
 
+    /**
+     * Cập nhật vị trí và trạng thái của quả bóng cho mỗi khung hình.
+     * Xử lý chuyển động, va chạm và việc mất mạng.
+     *
+     * @param sceneWidth  Chiều rộng của màn chơi.
+     * @param sceneHeight Chiều cao của màn chơi.
+     * @param paddle      Đối tượng thanh đỡ của người chơi.
+     * @param bricks      Mảng 2D chứa các viên gạch.
+     */
     public void update(double sceneWidth, double sceneHeight, Paddle paddle, Brick[][] bricks) {
         if(lives>0) {
             move(speed * vectorX, speed * vectorY);
@@ -46,6 +68,11 @@ public class Ball extends GameObject {
         }
     }
 
+    /**
+     * Đặt lại vị trí và véc-tơ chuyển động của quả bóng, gắn nó vào thanh đỡ.
+     *
+     * @param paddle Thanh đỡ để đặt lại quả bóng lên trên.
+     */
     public void reset(Paddle paddle) {
         setX(paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0);
         setY(paddle.getY() - getHeight() );
@@ -55,18 +82,29 @@ public class Ball extends GameObject {
         this.onPaddle = true;
         this.fireBall = false;
     }
+
+    /**
+     * Quản lý tất cả logic phát hiện và phản ứng va chạm cho quả bóng.
+     * Xử lý việc nảy khỏi tường, thanh đỡ và các viên gạch.
+     *
+     * @param paddle      Thanh đỡ của người chơi.
+     * @param bricks      Mảng 2D chứa các viên gạch.
+     * @param sceneWidth  Chiều rộng của màn chơi.
+     * @param sceneHeight Chiều cao của màn chơi.
+     */
     public void bounceOff(Paddle paddle, Brick[][] bricks, double sceneWidth, double sceneHeight) {
-        // chạm khung trái phải
+        // Nảy khỏi tường trái và phải
         if (getX() <= 0 || getX() + getWidth() >= sceneWidth) {
             audio.playWallHit();
             move(-speed * vectorX, -speed * vectorY);
             vectorX *= -1;
         }
+        // Nảy khỏi tường trên
         if (getY() <= 0) {
             move(-speed * vectorX, -speed * vectorY);
             vectorY*=-1;
         }
-
+        // Nảy khỏi paddle
         if (checkCollision(paddle)) {
             if (checkCollision(paddle)) {
                 audio.playPaddleHit();
@@ -81,7 +119,7 @@ public class Ball extends GameObject {
             }
             setY(paddle.getY() - getHeight()-1);
         }
-
+        // Nảy khỏi gạch
         for(int i = 0; i < 8; i++)
             for(int j = 0; j < 12; j++) {
                 Brick brick = bricks[i][j];
@@ -95,13 +133,15 @@ public class Ball extends GameObject {
                         newDestroyBrick = false;
                     }
                     move(-speed * vectorX, -speed * vectorY);
+
+                    // Xác định cạnh va chạm
                     double overlapLeft = getX() + getWidth() - brick.getX();
                     double overlapRight = brick.getX() + brick.getWidth() - getX();
                     double overlapTop = getY() + getHeight() - brick.getY();
                     double overlapBottom = brick.getY() + brick.getHeight() - getY();
-
                     double minOverlap = Math.min(Math.min(overlapLeft, overlapRight),
                             Math.min(overlapTop, overlapBottom));
+
                     if (minOverlap == overlapLeft || minOverlap == overlapRight) {
                         vectorX *= -1;
                     } else {
@@ -125,6 +165,13 @@ public class Ball extends GameObject {
             }
     }
 
+    /**
+     * Lấy hình ảnh của quả bóng dựa trên chỉ số.
+     * Trả về hình ảnh bóng lửa nếu đang ở trạng thái fireball.
+     *
+     * @param index Chỉ số của hình ảnh.
+     * @return Hình ảnh tương ứng.
+     */
     public Image getImg(int index)
     {
         if(fireBall) return ballImg[2];

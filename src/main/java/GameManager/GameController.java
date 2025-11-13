@@ -6,27 +6,21 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
-
+/**
+ * Controller chính điều khiển màn hình chơi game (game.fxml).
+ * Quản lý vòng lặp game (logic và đồ họa), xử lý va chạm,
+ * vẽ các đối tượng và xử lý sự kiện đầu vào.
+ */
 public class GameController {
     private Canvas canvas = new Canvas(1280,720);
     private GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -64,6 +58,11 @@ public class GameController {
 
     @FXML AnchorPane gameLayout;
 
+    /**
+     * Khởi tạo màn chơi khi FXML được tải.
+     * Thêm canvas vào layout, bắt đầu vòng lặp đồ họa (uiLoop) và
+     * vòng lặp logic (LogicLoop) chạy song song.
+     */
     public void initialize() {
         AudioController.getInstance().playGameMusic();
         gameLayout.getChildren().add(canvas);
@@ -98,8 +97,10 @@ public class GameController {
         gameLayoutEvents();
     }
 
+    /**
+     * Thiết lập bản đồ gạch cho màn chơi dựa trên 'level' đã được đặt.
+     */
     public void startGame() {
-
         bricktypes = variableValue.brickMap(level);
         for(int i = 0; i < 8; i++)
         for(int j = 0; j < 12; j++) {
@@ -108,6 +109,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Thiết lập các trình xử lý sự kiện (bàn phím) cho màn chơi.
+     */
     private void gameLayoutEvents() {
         canvas.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
@@ -139,17 +143,12 @@ public class GameController {
         });
         canvas.setFocusTraversable(true);
         canvas.requestFocus();
-
-        gameLayout.setOnMouseMoved( mouseMove -> {
-
-        });
-
-        gameLayout.setOnMouseClicked(mouseEvent -> {
-                ScoreDataAccessObject data = new ScoreDataAccessObject();
-                //data.getPoint(1);
-        });
     }
 
+    /**
+     * Cập nhật logic cho bóng (di chuyển, va chạm).
+     * Tạo PowerUp nếu phá gạch.
+     */
     private void renderBall() {
         if(!ball.isOnPaddle()) {
             ball.update(canvas.getWidth(), canvas.getHeight(), paddle, bricks);
@@ -167,6 +166,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Cập nhật logic cho các PowerUp (di chuyển, va chạm với thanh đỡ).
+     */
     private void renderPowerUp() {
         for(PowerUp tmpPowerUp:powerUp) {
             tmpPowerUp.move(0,3);
@@ -183,9 +185,11 @@ public class GameController {
             powerUp.remove(tmpPowerUpDelete);
         }
         powerUpDelete.clear();
-
     }
 
+    /**
+     * Cập nhật logic cho đạn (khi có PowerUp Shoot).
+     */
     private  void renderBullet() {
         if(bulletLeft > 0 && bulletCooldown >= 300) {
             audio.playPowerUpShoot();
@@ -217,6 +221,10 @@ public class GameController {
         bulletDelete.clear();
     }
 
+    /**
+     * Kiểm tra điều kiện kết thúc game (hết gạch hoặc hết bóng).
+     * Dừng các vòng lặp và chuyển sang màn hình EndGame.
+     */
     public void endgame() {
         if(brickLeft() == 0 || ball.getLives() == 0) {
             System.out.println("Game Over");
@@ -243,10 +251,12 @@ public class GameController {
                 }
             });
         }
-
-
     }
 
+    /**
+     * Vẽ tất cả các đối tượng lên canvas.
+     * Được gọi bởi uiLoop (AnimationTimer).
+     */
     private void draw() {
         Brick tempBrick;
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -281,16 +291,17 @@ public class GameController {
                 paddle.getWidth(), paddle.getHeight());
     }
 
-
-
-    /** types
-     *      powerUp_BigPaddle = 0;
-     *      powerUp_SmallPaddle = 1;
-     *      powerUp_Fast = 2;
-     *      powerUp_Slow = 3;
-     *      powerUp_Shoot = 4;
-     *      powerUp_FireBall = 5;
-     *      powerUp_TripleBall = 6;
+    /**
+     * Kích hoạt hiệu ứng dựa trên loại PowerUp.
+     * types:
+     * 0: BigPaddle (Thanh đỡ lớn)
+     * 1: SmallPaddle (Thanh đỡ nhỏ)
+     * 2: Fast (Bóng nhanh)
+     * 3: Slow (Bóng chậm)
+     * 4: Shoot (Bắn đạn)
+     * 5: FireBall (Bóng lửa)
+     *
+     * @param type Loại PowerUp (0-5).
      */
     public void setPowerUp(int type) {
         switch (type) {
@@ -312,12 +323,14 @@ public class GameController {
             case 5:
                 ball.setFireBall(true);
                 break;
-            case 6:
-
-                break;
         }
     }
 
+    /**
+     * Đếm số gạch có thể phá hủy còn lại (loại 6 là bất tử).
+     *
+     * @return Số gạch còn lại.
+     */
     public int brickLeft() {
         int temp = 0;
         for(int i = 0; i < 8; i++)
@@ -326,6 +339,11 @@ public class GameController {
         return temp;
     }
 
+    /**
+     * Đặt màn chơi (level) sẽ được tải khi gọi {@link #startGame()}.
+     *
+     * @param level Chỉ số màn chơi (ví dụ: 1, 2, 3...).
+     */
     public void setLevel(int level) {
         this.level = level;
     }

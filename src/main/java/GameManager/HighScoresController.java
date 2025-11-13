@@ -7,17 +7,28 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import java.util.Queue;
 
+/**
+ * Controller cho màn hình Bảng xếp hạng (highScores.fxml).
+ * Hiển thị 5 người dùng có điểm cao nhất.
+ */
 public class HighScoresController {
 
     @FXML private Label name1, name2, name3, name4, name5;
     @FXML private Label score1, score2, score3, score4, score5;
 
+    /**
+     * Phương thức này được gọi tự động khi FXML được tải xong.
+     * Tải và hiển thị điểm cao.
+     */
     public void initialize() {
         loadHighScores();
     }
 
+    /**
+     * Xử lý sự kiện khi nhấn nút "Quay lại" (Back to Menu).
+     * Chuyển cảnh về màn hình Menu.
+     */
     @FXML
     private void onBackToMenu() {
         try {FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/Menu.fxml"));
@@ -33,6 +44,10 @@ public class HighScoresController {
         }
     }
 
+    /**
+     * Tải dữ liệu điểm cao từ hàng đợi (Queue) trong User Singleton
+     * và điền vào các Label tương ứng.
+     */
     private void loadHighScores() {
         Label[] nameLabels = {name1, name2, name3, name4, name5};
         Label[] scoreLabels = {score1, score2, score3, score4, score5};

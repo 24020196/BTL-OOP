@@ -13,6 +13,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * Controller cho màn hình kết thúc trò chơi (endGame.fxml).
+ * Xử lý việc hiển thị thắng/thua, lưu điểm, và điều hướng (chơi lại, về menu).
+ */
 public class EndGameController {
     private ScoreDataAccessObject scoreDataAccessObject = new ScoreDataAccessObject();
 
@@ -20,6 +24,12 @@ public class EndGameController {
     @FXML ImageView endGameBackground;
     @FXML Label loadingText;
 
+    /**
+     * Được gọi khi người chơi thắng màn.
+     * Hiển thị hình ảnh "You Win", sau đó bắt đầu một luồng mới để lưu
+     * điểm (cả điểm màn và tổng điểm) vào cơ sở dữ liệu.
+     * Sau khi lưu xong, kích hoạt {eventListener()}.
+     */
     public void winGame() {
         endGameBackground.setImage(new Image(getClass().getResource("/res/youWin.png").toExternalForm()));
         Thread database = new Thread(() -> {
@@ -34,6 +44,11 @@ public class EndGameController {
         database.start();
     }
 
+    /**
+     * Thiết lập các trình xử lý sự kiện click chuột cho màn hình kết thúc.
+     * Sử dụng tọa độ click để xác định "nút" nào được nhấn (Chơi lại, Map, Thoát).
+     * (Hàm này cũng được gọi trực tiếp nếu người chơi thua).
+     */
     public void eventListener() {
         endGameLayout.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getX() >= 452 && mouseEvent.getX() <= 743) {

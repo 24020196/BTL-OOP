@@ -17,10 +17,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 
+/**
+ * Controller cho màn hình Bản đồ chọn màn chơi (levelMap.fxml).
+ * Hiển thị các màn chơi và số sao đạt được.
+ */
 public class LevelMapController {
 
     @FXML AnchorPane levelLayout;
     @FXML ImageView levelMapBackground;
+    // Các ImageView cho từng màn chơi, dùng làm "nút"
     @FXML ImageView level1;
     @FXML ImageView level2;
     @FXML ImageView level3;
@@ -31,20 +36,31 @@ public class LevelMapController {
     @FXML ImageView level8;
     @FXML ImageView level9;
 
+    // Sử dụng Canvas để vẽ các ngôi sao LÊN TRÊN ảnh nền
     private Canvas canvas = new Canvas(1280, 720);;
     private GraphicsContext gc = canvas.getGraphicsContext2D();;
     private Image starOnImg = new Image(getClass().getResource("/res/star_full.png").toExternalForm());
     private Image starOffImg = new Image(getClass().getResource("/res/star_empty.png").toExternalForm());
 
+    /**
+     * Được gọi khi FXML được tải.
+     * Thêm canvas vào layout, vẽ các sao và thiết lập sự kiện click.
+     */
     public void initialize() {
-        canvas.setMouseTransparent(true);
+        canvas.setMouseTransparent(true); // Làm canvas trong suốt với chuột
         levelLayout.getChildren().add(canvas);
-        drawStarsAllLevels(gc);
-        levelLayoutEvents();
-
+        drawStarsAllLevels(gc); // Vẽ các sao
+        levelLayoutEvents(); // Thiết lập sự kiện click cho các ImageView
     }
 
+    /**
+     * Vẽ 3 ngôi sao (đầy hoặc rỗng) cho mỗi màn chơi dựa trên
+     * chuỗi điểm (levelPoint) đã lưu của người dùng.
+     *
+     * @param gc Context đồ họa của canvas.
+     */
     private void drawStarsAllLevels(GraphicsContext gc) {
+        // Tọa độ (trung tâm) để vẽ 3 ngôi sao cho mỗi màn
         double[][] positions = {
                 {84, 311},   // Level 1
                 {589, 190},   // Level 2
@@ -62,39 +78,33 @@ public class LevelMapController {
             starsAchieved[i] = Character.getNumericValue(User.getUser().getLevelPoint().charAt(i));
         }
 
-        double starSize = 30;   // Kích thước mỗi ngôi sao
-        double spacing = 35;    // Khoảng cách giữa các sao
+        double starSize = 30;
+        double spacing = 35;
 
         for (int i = 0; i < positions.length; i++) {
             double centerX = positions[i][0];
             double centerY = positions[i][1];
-
-            // Vẽ 3 sao theo hàng ngang
             for (int s = 0; s < 3; s++) {
                 double x = centerX + (s - 1) * spacing - starSize / 2;
                 double y = centerY - starSize / 2;
-
-                // Nếu số sao đạt được >= s+1 thì sáng, ngược lại tối
                 Image star = (starsAchieved[i] > s) ? starOnImg : starOffImg;
                 gc.drawImage(star, x, y, starSize, starSize);
             }
         }
     }
 
+    /**
+     * (Hàm này có vẻ không được sử dụng và trùng lặp với logic trong initialize)
+     */
     public void drawStar() {
-       // System.out.println(User.getUser().getLevelPoint());
-
+        // System.out.println(User.getUser().getLevelPoint());
     }
 
+    /**
+     * Thiết lập sự kiện click cho các ImageView (level1, level2, ...).
+     * Khi click, tải màn chơi (game.fxml) với chỉ số màn tương ứng.
+     */
     private void levelLayoutEvents() {
-        levelLayout.setOnMouseClicked(mouseEvent -> {
-            //System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
-        });
-
-        levelLayout.setOnMouseMoved( mouseMove -> {
-
-        });
-
         ImageView[] levels = {level1, level2, level3, level4, level5, level6, level7, level8, level9};
 
         for (int i = 0; i < levels.length; i++) {
@@ -117,6 +127,11 @@ public class LevelMapController {
             });
         }
     }
+
+    /**
+     * Xử lý sự kiện khi nhấn nút "Quay lại" (Back to Menu).
+     * Chuyển cảnh về màn hình Menu.
+     */
     @FXML
     private void onBackToMenu() {
         try {
@@ -132,7 +147,4 @@ public class LevelMapController {
             e.printStackTrace();
         }
     }
-
-
-
 }

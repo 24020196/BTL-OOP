@@ -1,28 +1,21 @@
 package GameManager;
 
-import Entity.Brick;
-import Entity.GameObject;
 import Entity.User;
 import GameDatabase.ScoreDataAccessObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
-import static javafx.application.Application.launch;
-
-
+/**
+ * Controller cho màn hình Menu chính (Menu.fxml).
+ * Xử lý điều hướng, hiệu ứng nút và tải dữ liệu người dùng từ cơ sở dữ liệu.
+ */
 public class MenuController {
     @FXML AnchorPane mainLayout;
     @FXML AnchorPane menuLayout;
@@ -36,11 +29,20 @@ public class MenuController {
 
     private ScoreDataAccessObject data = new ScoreDataAccessObject();
 
+    /**
+     * Được gọi khi FXML được tải.
+     * Cài đặt kích thước ban đầu và các sự kiện di chuột.
+     */
     public void initialize() {
         setsize();
         mainLayoutEvents();
     }
 
+    /**
+     * Kết nối cơ sở dữ liệu trên một luồng riêng để tải điểm (levelPoint)
+     * và điểm cao (highScores) của người dùng.
+     * Kích hoạt các sự kiện click ({@link #clickEvents()}) sau khi tải xong.
+     */
     public void connectDatabase() {
         Thread database = new Thread(() -> {
              {
@@ -59,6 +61,9 @@ public class MenuController {
 
     }
 
+    /**
+     * Thiết lập sự kiện di chuyển chuột trên layout chính để xử lý.
+     */
     public void mainLayoutEvents() {
         mainLayout.setOnMouseMoved( mouseMove -> {
             setVisibleImageView(btnPlayGame, mouseMove.getX(), mouseMove.getY());
@@ -69,12 +74,12 @@ public class MenuController {
         });
     }
 
+    /**
+     * Gán sự kiện click cho các nút (Play, High Scores, Setting, Exit)
+     * để điều hướng đến các màn hình tương ứng hoặc thoát ứng dụng.
+     * Hàm này chỉ được gọi sau khi {@link #connectDatabase()} hoàn tất.
+     */
     public void clickEvents() {
-        mainLayout.setOnMouseClicked(mouseEvent -> {
-            //System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
-        });
-
-
         btnPlayGame.setOnMouseClicked(event -> {
              try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/levelMap.fxml"));
@@ -84,21 +89,18 @@ public class MenuController {
                 Stage stage = (Stage) mainLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.show();
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
 
         btnHighScores.setOnMouseClicked(event -> {
-
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/RenderView/highScore.fxml"));
                 Parent root = loader.load();
                 Stage stage = (Stage) mainLayout.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.show();
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -111,7 +113,6 @@ public class MenuController {
                 setting.getChildren().setAll(settingPane);
                 menuLayout.setVisible(false);
                 setting.setVisible(true);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -122,6 +123,9 @@ public class MenuController {
         });
     }
 
+    /**
+     * Cài đặt kích thước và vị trí ban đầu cho các thành phần giao diện.
+     */
     void setsize() {
         update(menuBackground, 0 , 0 , 1280 , 720);
         update(btnPlayGame, 356, 207, 495, 106);
@@ -131,6 +135,9 @@ public class MenuController {
 
     }
 
+    /**
+     * Hàm trợ giúp để cập nhật vị trí và kích thước của ImageView.
+     */
     void update(ImageView imageView, double x, double y, double width, double height) {
         imageView.setLayoutX(x);
         imageView.setLayoutY(y);
@@ -138,7 +145,10 @@ public class MenuController {
         imageView.setFitHeight(height);
     }
 
-
+    /**
+     * Xử lý logic hiệu ứng hover: hiển thị ImageView nếu chuột
+     * nằm trong vùng (bounds) của nó.
+     */
     void setVisibleImageView(ImageView imageView, double x, double y) {
         double left = imageView.getLayoutX();
         double right = imageView.getLayoutX() + imageView.getFitWidth();
