@@ -240,7 +240,7 @@ public class GameController {
                     EndGameController endGameController = loader.getController();
                     if (ball.getLives() > 0) {
                         endGameController.winGame();
-                        User.getUser().setCurrentLevel(Math.max(9,level + 1));
+                        User.getUser().setCurrentLevel(Math.min(9,level + 1));
                     } else endGameController.eventListener();
                     Stage stage = (Stage) gameLayout.getScene().getWindow();
                     stage.setScene(new Scene(root));
